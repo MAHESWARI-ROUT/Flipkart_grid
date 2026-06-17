@@ -1,8 +1,8 @@
 const SEV = {
-  CRITICAL:{ ring:'ring-red-500',    bg:'bg-red-950',    txt:'text-red-400',    badge:'bg-red-900 text-red-300' },
-  HIGH:    { ring:'ring-orange-500', bg:'bg-orange-950', txt:'text-orange-400', badge:'bg-orange-900 text-orange-300' },
-  MEDIUM:  { ring:'ring-yellow-500', bg:'bg-yellow-950', txt:'text-yellow-400', badge:'bg-yellow-900 text-yellow-300' },
-  LOW:     { ring:'ring-green-500',  bg:'bg-green-950',  txt:'text-green-400',  badge:'bg-green-900 text-green-300' },
+  CRITICAL: { ring: 'ring-red-500', bg: 'bg-red-950', txt: 'text-red-400', badge: 'bg-red-900 text-red-300' },
+  HIGH: { ring: 'ring-orange-500', bg: 'bg-orange-950', txt: 'text-orange-400', badge: 'bg-orange-900 text-orange-300' },
+  MEDIUM: { ring: 'ring-yellow-500', bg: 'bg-yellow-950', txt: 'text-yellow-400', badge: 'bg-yellow-900 text-yellow-300' },
+  LOW: { ring: 'ring-green-500', bg: 'bg-green-950', txt: 'text-green-400', badge: 'bg-green-900 text-green-300' },
 }
 
 const ScoreRing = ({ value, color }) => {
@@ -10,18 +10,18 @@ const ScoreRing = ({ value, color }) => {
   const offset = circ - (value / 100) * circ
   return (
     <svg width="100" height="100" viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r={r} fill="none" stroke="#374151" strokeWidth="8"/>
+      <circle cx="50" cy="50" r={r} fill="none" stroke="#374151" strokeWidth="8" />
       <circle cx="50" cy="50" r={r} fill="none" stroke={color} strokeWidth="8"
         strokeDasharray={circ} strokeDashoffset={offset}
         strokeLinecap="round" transform="rotate(-90 50 50)"
-        style={{transition:'stroke-dashoffset 0.8s ease'}}/>
+        style={{ transition: 'stroke-dashoffset 0.8s ease' }} />
       <text x="50" y="50" textAnchor="middle" dominantBaseline="central"
         fontSize="20" fontWeight="bold" fill="white">{value}</text>
     </svg>
   )
 }
 
-const RING_COLORS = { CRITICAL:'#ef4444', HIGH:'#f97316', MEDIUM:'#eab308', LOW:'#22c55e' }
+const RING_COLORS = { CRITICAL: '#ef4444', HIGH: '#f97316', MEDIUM: '#eab308', LOW: '#22c55e' }
 
 export default function ResultCard({ result }) {
   const s = SEV[result.severity] || SEV.LOW
@@ -39,68 +39,46 @@ export default function ResultCard({ result }) {
           </span>
         </div>
         <div className="flex flex-col items-center">
-          <ScoreRing value={result.impact_score} color={ringColor}/>
+          <ScoreRing value={result.impact_score} color={ringColor} />
           <p className="text-gray-400 text-xs mt-1">Impact Score</p>
         </div>
       </div>
 
       {/* 4 metric grid */}
-      <div className="grid grid-cols-2 gap-2 mb-4">
+      <div className="bg-black bg-opacity-30 rounded-lg p-3">
+        <p className="text-gray-500 text-xs">Closure Risk</p>
 
-  <div className="bg-black bg-opacity-30 rounded-lg p-3">
-    <p className="text-gray-500 text-xs">Priority</p>
-    <p className="text-white font-bold text-base mt-1">
-      {result.priority}
-    </p>
-    <p className="text-gray-500 text-xs">
-      {result.priority_confidence}% confidence
-    </p>
-  </div>
+        <p className="text-white font-bold text-base mt-1">
+          {result.road_closure_probability}%
+        </p>
 
-  <div className="bg-black bg-opacity-30 rounded-lg p-3">
-    <p className="text-gray-500 text-xs">Est. Delay</p>
-    <p className="text-white font-bold text-base mt-1">
-      +{result.estimated_delay_mins} min
-    </p>
-  </div>
+        <div className="w-full bg-gray-700 rounded-full h-2 mt-2">
+          <div
+            className={`h-2 rounded-full ${result.road_closure_probability > 70
+                ? "bg-red-500"
+                : result.road_closure_probability > 40
+                  ? "bg-yellow-500"
+                  : "bg-green-500"
+              }`}
+            style={{
+              width: `${result.road_closure_probability}%`
+            }}
+          />
+        </div>
 
-  <div className="bg-black bg-opacity-30 rounded-lg p-3">
-    <p className="text-gray-500 text-xs">Vehicles Affected</p>
-    <p className="text-white font-bold text-base mt-1">
-      ~{result.vehicles_affected_est?.toLocaleString()}
-    </p>
-  </div>
-
-  <div className="bg-black bg-opacity-30 rounded-lg p-3">
-    <p className="text-gray-500 text-xs">Closure Risk</p>
-
-    <p className="text-white font-bold text-base mt-1">
-      {result.road_closure_probability}%
-    </p>
-
-    <div className="w-full h-2 bg-gray-700 rounded mt-2">
-      <div
-        className={`h-2 rounded ${
-          result.road_closure_probability > 70
-            ? "bg-red-500"
+        <p className={`text-xs mt-2 ${result.road_closure_probability > 70
+            ? "text-red-400"
             : result.road_closure_probability > 40
-            ? "bg-yellow-500"
-            : "bg-green-500"
-        }`}
-        style={{
-          width: `${result.road_closure_probability}%`
-        }}
-      />
-    </div>
-
-    <p className="text-gray-500 text-xs mt-1">
-      {result.road_closure_probability > 50
-        ? "High closure likelihood"
-        : "Low closure likelihood"}
-    </p>
-  </div>
-
-</div>
+              ? "text-yellow-400"
+              : "text-green-400"
+          }`}>
+          {result.road_closure_probability > 70
+            ? "High closure likelihood"
+            : result.road_closure_probability > 40
+              ? "Moderate closure likelihood"
+              : "Low closure likelihood"}
+        </p>
+      </div>
 
       {/* Congestion risk bar */}
       {result.congestion_risk !== undefined && (
@@ -111,7 +89,7 @@ export default function ResultCard({ result }) {
           </div>
           <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
             <div className="h-full rounded-full transition-all duration-700"
-              style={{width:`${result.congestion_risk}%`, backgroundColor: ringColor}}/>
+              style={{ width: `${result.congestion_risk}%`, backgroundColor: ringColor }} />
           </div>
         </div>
       )}
