@@ -46,21 +46,61 @@ export default function ResultCard({ result }) {
 
       {/* 4 metric grid */}
       <div className="grid grid-cols-2 gap-2 mb-4">
-        {[
-          { l:'Priority',        v: result.priority,
-            s: `${result.priority_confidence}% confidence` },
-          { l:'Road Closure',    v: result.road_closure_risk,
-            s: `${result.road_closure_probability}% probability` },
-          { l:'Est. Delay',      v: `+${result.estimated_delay_mins} min` },
-          { l:'Vehicles Affected',v: `~${result.vehicles_affected_est?.toLocaleString()}` },
-        ].map(m=>(
-          <div key={m.l} className="bg-black bg-opacity-30 rounded-lg p-3">
-            <p className="text-gray-500 text-xs">{m.l}</p>
-            <p className="text-white font-bold text-base mt-1">{m.v}</p>
-            {m.s && <p className="text-gray-500 text-xs mt-0.5">{m.s}</p>}
-          </div>
-        ))}
-      </div>
+
+  <div className="bg-black bg-opacity-30 rounded-lg p-3">
+    <p className="text-gray-500 text-xs">Priority</p>
+    <p className="text-white font-bold text-base mt-1">
+      {result.priority}
+    </p>
+    <p className="text-gray-500 text-xs">
+      {result.priority_confidence}% confidence
+    </p>
+  </div>
+
+  <div className="bg-black bg-opacity-30 rounded-lg p-3">
+    <p className="text-gray-500 text-xs">Est. Delay</p>
+    <p className="text-white font-bold text-base mt-1">
+      +{result.estimated_delay_mins} min
+    </p>
+  </div>
+
+  <div className="bg-black bg-opacity-30 rounded-lg p-3">
+    <p className="text-gray-500 text-xs">Vehicles Affected</p>
+    <p className="text-white font-bold text-base mt-1">
+      ~{result.vehicles_affected_est?.toLocaleString()}
+    </p>
+  </div>
+
+  <div className="bg-black bg-opacity-30 rounded-lg p-3">
+    <p className="text-gray-500 text-xs">Closure Risk</p>
+
+    <p className="text-white font-bold text-base mt-1">
+      {result.road_closure_probability}%
+    </p>
+
+    <div className="w-full h-2 bg-gray-700 rounded mt-2">
+      <div
+        className={`h-2 rounded ${
+          result.road_closure_probability > 70
+            ? "bg-red-500"
+            : result.road_closure_probability > 40
+            ? "bg-yellow-500"
+            : "bg-green-500"
+        }`}
+        style={{
+          width: `${result.road_closure_probability}%`
+        }}
+      />
+    </div>
+
+    <p className="text-gray-500 text-xs mt-1">
+      {result.road_closure_probability > 50
+        ? "High closure likelihood"
+        : "Low closure likelihood"}
+    </p>
+  </div>
+
+</div>
 
       {/* Congestion risk bar */}
       {result.congestion_risk !== undefined && (
