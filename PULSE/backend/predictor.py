@@ -232,25 +232,27 @@ def predict(data: dict) -> dict:
 
     return {
         # Core predictions
-        "impact_score":          round(impact, 1),
-        "severity":              severity,
-        "reported_closure": rc,
-        "congestion_risk":       round(congestion_risk, 1),
-        "priority":              priority_label,
-        "priority_confidence":   priority_conf,
+        "impact_score":               round(impact, 1),
+        "severity":                   severity,
+        "congestion_risk":            round(congestion_risk, 1),
+        "priority":                   priority_label,
+        "priority_confidence":        priority_conf,
         # Road closure (ML model B)
-        "road_closure_risk":     "Yes" if closure_pred else "No",
-        "road_closure_probability": round(closure_prob * 100, 2),
+        "road_closure_risk":          "Yes" if closure_pred else "No",
+        "road_closure_probability":   round(closure_prob * 100, 2),
         # Resources
         **res,
         # SLA
-        "response_sla_mins": {"CRITICAL":5,"HIGH":10,"MEDIUM":20,"LOW":30}[severity],
-        "estimated_delay_mins": {"CRITICAL":30,"HIGH":20,"MEDIUM":10,"LOW":5}[severity],
-        "vehicles_affected_est": int(impact * 85),
+        "response_sla_mins":          {"CRITICAL":5,"HIGH":10,"MEDIUM":20,"LOW":30}[severity],
+        "estimated_delay_mins":       {"CRITICAL":30,"HIGH":20,"MEDIUM":10,"LOW":5}[severity],
+        "vehicles_affected_est":      int(impact * 85),
         # Actions
-        "actions": _actions(cause, severity, closure_pred or rc),
+        "actions":                    _actions(cause, severity, closure_pred or rc),
+        # ✅ NEW — spatial intelligence features exposed for UI
+        "junction_freq":              round(float(jf), 4),
+        "corridor_freq":              round(float(cf), 4),
+        "hotspot_density":            round(float(hd), 4),
     }
-
 
 #  ANALYTICS (pre-computed from training data) 
 ANALYTICS = {
