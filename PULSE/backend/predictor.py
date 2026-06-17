@@ -142,15 +142,27 @@ def _actions(cause: str, severity: str, road_closure: bool) -> list:
 
 # MAIN PREDICT FUNCTION 
 def predict(data: dict) -> dict:
+    print("\nREQUEST DATA")
+    print(data)
     now      = datetime.now()
     cause    = str(data.get("event_cause", "others")).lower().strip()
-    etype    = str(data.get("event_type",  "unplanned"))
-    corridor = str(data.get("corridor",    "Non-corridor"))
-    zone     = str(data.get("zone",        "Unknown"))
-    junction = str(data.get("junction",    "Unknown"))
-    hour     = int(data.get("hour",        now.hour))
-    minute   = int(data.get("minute",      now.minute))
-    month    = int(data.get("month",       now.month))
+    etype    = str(data.get("event_type", "unplanned"))
+    corridor = str(data.get("corridor", "Non-corridor"))
+    zone     = str(data.get("zone", "Unknown"))
+    junction = str(data.get("junction","Unknown"))
+    hour = int(data.get("hour") or now.hour)
+
+    minute = (
+    int(data["minute"])
+    if data.get("minute") is not None
+    else now.minute
+)
+
+    month = (
+    int(data["month"])
+    if data.get("month") is not None
+    else now.month
+)
     lat      = float(data.get("latitude",  12.97))
     lon      = float(data.get("longitude", 77.59))
     rc       = bool(data.get("requires_road_closure", False))
