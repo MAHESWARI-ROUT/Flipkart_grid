@@ -234,6 +234,7 @@ def predict(data: dict) -> dict:
         # Core predictions
         "impact_score":          round(impact, 1),
         "severity":              severity,
+        "reported_closure": rc,
         "congestion_risk":       round(congestion_risk, 1),
         "priority":              priority_label,
         "priority_confidence":   priority_conf,

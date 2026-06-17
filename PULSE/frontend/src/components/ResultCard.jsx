@@ -66,18 +66,21 @@ export default function ResultCard({ result }) {
           />
         </div>
 
-        <p className={`text-xs mt-2 ${result.road_closure_probability > 70
-            ? "text-red-400"
-            : result.road_closure_probability > 40
-              ? "text-yellow-400"
-              : "text-green-400"
-          }`}>
+        <p
+          className={`text-xs mt-2 ${result.road_closure_probability > 70
+              ? "text-red-400"
+              : result.road_closure_probability > 40
+                ? "text-yellow-400"
+                : "text-green-400"
+            }`}
+        >
           {result.road_closure_probability > 70
             ? "High closure likelihood"
             : result.road_closure_probability > 40
               ? "Moderate closure likelihood"
               : "Low closure likelihood"}
         </p>
+
       </div>
 
       {/* Congestion risk bar */}

@@ -132,8 +132,8 @@ export default function IncidentForm({ onResult, apiBase }) {
       {/* Road closure toggle */}
       <div className="mb-5 flex items-center justify-between bg-gray-800 rounded-lg px-4 py-3 border border-gray-700">
         <div>
-          <p className="text-white text-sm font-medium">Requires Road Closure</p>
-          <p className="text-gray-500 text-xs">Significantly impacts traffic flow</p>
+          <p className="text-white text-sm font-medium">Road Closure Reported?</p>
+          <p className="text-gray-500 text-xs">Initial field report from operator</p>
         </div>
         <button onClick={()=>set('requires_road_closure',!form.requires_road_closure)}
           className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0
