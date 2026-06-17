@@ -7,8 +7,8 @@ import os, json
 from predictor import load_models, predict, get_analytics
 
 app = FastAPI(
-    title="TrafficSense API",
-    description="AI-Powered Event-Driven Congestion Intelligence — Bengaluru",
+    title="PULSE API",
+    description="PULSE — Predictive Urban Live Situation Engine for Bengaluru",
     version="2.0",
 )
 
@@ -42,7 +42,7 @@ class IncidentRequest(BaseModel):
 #  Endpoints 
 @app.get("/")
 def root():
-    return {"message": "TrafficSense API v2", "docs": "/docs"}
+    return {"message": "PULSE API v2", "docs": "/docs"}
 
 @app.get("/health")
 def health():

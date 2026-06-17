@@ -142,8 +142,7 @@ def _actions(cause: str, severity: str, road_closure: bool) -> list:
 
 # MAIN PREDICT FUNCTION 
 def predict(data: dict) -> dict:
-    print("\nREQUEST DATA")
-    print(data)
+    
     now      = datetime.now()
     cause    = str(data.get("event_cause", "others")).lower().strip()
     etype    = str(data.get("event_type", "unplanned"))

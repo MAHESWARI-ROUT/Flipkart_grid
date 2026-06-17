@@ -30,8 +30,8 @@ export default function App() {
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center text-lg shadow-lg">🚦</div>
           <div>
-            <h1 className="font-bold text-white text-lg leading-none">TrafficSense</h1>
-            <p className="text-gray-400 text-xs">AI Congestion Intelligence · Bengaluru</p>
+            <h1 className="font-bold text-white text-lg leading-none">PULSE</h1>
+            <p className="text-gray-400 text-xs">Predictive Urban Live Situation Engine · Bengaluru</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
