@@ -229,6 +229,61 @@ def predict(data: dict) -> dict:
         0.4 * impact + 20 * is_peak + 15 * is_major + 10 * int(closure_pred or rc),
         100
     )
+    drivers = []
+
+    cause_display = cause.replace("_", " ").title()
+
+    drivers.append({
+    "name": f"{cause_display} Incident Severity",
+    "score": sev * 5
+})
+
+    if closure_pred or rc:
+       drivers.append({
+        "name": "Road Closure",
+        "score": 20
+    })
+
+    if is_major:
+       drivers.append({
+    "name": "Major Traffic Corridor",
+    "score": 10
+})
+
+    if is_peak:
+       drivers.append({
+        "name": "Peak Hour",
+        "score": 5
+    })
+
+    drivers = sorted(
+    drivers,
+    key=lambda x: x["score"],
+    reverse=True
+)
+    explanation = []
+
+    if closure_pred or rc:
+       explanation.append("road closure")
+
+    if is_major:
+      explanation.append("major traffic corridor")
+
+    if is_peak:
+       explanation.append("peak-hour traffic")
+
+    if sev >= 5:
+       explanation.append("high incident severity")
+
+    if explanation:
+       explanation_text = (
+        "High impact driven by " +
+        ", ".join(explanation[:-1]) +
+        (" and " + explanation[-1] if len(explanation) > 1 else explanation[0])
+        + "."
+    )
+    else:
+     explanation_text = "Moderate traffic impact expected."
 
     return {
         # Core predictions
@@ -252,6 +307,8 @@ def predict(data: dict) -> dict:
         "junction_freq":              round(float(jf), 4),
         "corridor_freq":              round(float(cf), 4),
         "hotspot_density":            round(float(hd), 4),
+        "prediction_drivers": drivers,
+        "prediction_explanation": explanation_text,
     }
 
 #  ANALYTICS (pre-computed from training data) 
