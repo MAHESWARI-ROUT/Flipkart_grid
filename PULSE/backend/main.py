@@ -97,27 +97,48 @@ def get_hotspots():
 def analytics():
     return get_analytics()
 
+import joblib
+
 @app.get("/corridors")
 def corridors():
+
+    encoders = joblib.load(
+        os.path.join(MODEL_DIR, "encoders.pkl")
+    )
+
     return {
-        "corridors": [
-            "Non-corridor","Mysore Road","Bellary Road 1","Bellary Road 2",
-            "Tumkur Road","Hosur Road","ORR North 1","ORR North 2",
-            "Old Madras Road","Magadi Road","ORR East 1","ORR East 2",
-            "ORR West 1","Bannerghata Road","West of Chord Road",
-            "Airport New South Road","Varthur Road","Hennur Main Road",
-            "Old Airport Road","CBD 1","CBD 2","IRR(Thanisandra road)"
-        ]
+        "corridors":
+        sorted(
+            encoders["corridor"].classes_.tolist()
+        )
     }
 
 @app.get("/zones")
 def zones():
+
+    encoders = joblib.load(
+        os.path.join(MODEL_DIR, "encoders.pkl")
+    )
+
     return {
-        "zones": [
-            "Central Zone 1","Central Zone 2","North Zone 1","North Zone 2",
-            "South Zone 1","South Zone 2","East Zone 1","East Zone 2",
-            "West Zone 1","West Zone 2","Unknown"
-        ]}
+        "zones":
+        sorted(
+            encoders["zone"].classes_.tolist()
+        )
+    }
+@app.get("/junctions")
+def junctions():
+
+    encoders = joblib.load(
+        os.path.join(MODEL_DIR, "encoders.pkl")
+    )
+
+    return {
+        "junctions":
+        sorted(
+            encoders["junction"].classes_.tolist()
+        )
+    }
 
 
 @app.post("/export-report")

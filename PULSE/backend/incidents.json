@@ -10,5 +10,77 @@
     "barricades_needed": 4,
     "id": "56642358-5cfa-42e8-85ab-3cad1f8edb48",
     "timestamp": "18-Jun-2026 18:38"
+  },
+  {
+    "incident_type": "vehicle_breakdown",
+    "corridor": "Non-corridor",
+    "zone": "Unknown",
+    "junction": "Unknown",
+    "severity": "MEDIUM",
+    "impact_score": 30.0,
+    "officers_needed": 3,
+    "barricades_needed": 2,
+    "id": "05d34ba3-2f23-4d34-af84-018553407eae",
+    "timestamp": "18-Jun-2026 18:56"
+  },
+  {
+    "incident_type": "accident",
+    "corridor": "ORR East 2",
+    "zone": "East Zone 2",
+    "junction": "Unknown",
+    "severity": "CRITICAL",
+    "impact_score": 80.0,
+    "officers_needed": 12,
+    "barricades_needed": 6,
+    "id": "9b7e3144-f98e-40de-8e4b-45f25a411b1a",
+    "timestamp": "18-Jun-2026 18:58"
+  },
+  {
+    "incident_type": "water_logging",
+    "corridor": "Hosur Road",
+    "zone": "South Zone 1",
+    "junction": "Unknown",
+    "severity": "MEDIUM",
+    "impact_score": 40.0,
+    "officers_needed": 4,
+    "barricades_needed": 4,
+    "id": "4f21cab3-be5b-4e24-bb4b-d17ab2797468",
+    "timestamp": "18-Jun-2026 19:00"
+  },
+  {
+    "incident_type": "rare_event",
+    "corridor": "ORR North 1",
+    "zone": "Central Zone 2",
+    "junction": "Unknown",
+    "severity": "HIGH",
+    "impact_score": 72.0,
+    "officers_needed": 20,
+    "barricades_needed": 12,
+    "id": "32fd92f8-b1a9-42e6-b725-e29b3dbc0b3e",
+    "timestamp": "18-Jun-2026 19:04"
+  },
+  {
+    "incident_type": "accident",
+    "corridor": "Unknown",
+    "zone": "",
+    "junction": "AnjaneyaTempleJunc",
+    "severity": "HIGH",
+    "impact_score": 50.0,
+    "officers_needed": 8,
+    "barricades_needed": 4,
+    "id": "98287be1-8f5f-4b1e-9414-89416cc74620",
+    "timestamp": "18-Jun-2026 20:48"
+  },
+  {
+    "incident_type": "accident",
+    "corridor": "Airport New South Road",
+    "zone": "Central Zone 1",
+    "junction": "17th Mn 1st Crs Aishwarya Stores Jn",
+    "severity": "HIGH",
+    "impact_score": 60.0,
+    "officers_needed": 8,
+    "barricades_needed": 4,
+    "id": "ae2a2a59-f379-42e2-9e80-0166f415cb41",
+    "timestamp": "18-Jun-2026 20:54"
   }
 ]

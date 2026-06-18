@@ -718,7 +718,7 @@ report = {
         "FIX-5: Real StackingClassifier (XGB + LGB → LR meta) replacing single LGB",
         "FIX-6: Duplicate stack.fit() call removed",
         "FIX-7: Closure threshold from aggregated ALL-fold probs, not last fold only",
-        "FIX-8: Final models retrained on full dataset using best CV params",
+        "FIX-8: Final ../backend/models retrained on full dataset using best CV params",
         "FIX-9: SHAP computed on best fold's held-out val, not the Optuna tuning split",
     ],
 }

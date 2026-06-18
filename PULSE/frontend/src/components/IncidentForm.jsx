@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 const CAUSES = [
@@ -17,64 +17,64 @@ const CAUSES = [
 ]
 
 const ATTENDANCE_OPTIONS = [
-  { v:'lt_500',        l:'👤 Less than 500',     short:'<500' },
-  { v:'500_2000',      l:'👥 500 – 2,000',        short:'500–2K' },
-  { v:'2000_5000',     l:'👥 2,000 – 5,000',      short:'2K–5K' },
-  { v:'5000_10000',    l:'👥👥 5,000 – 10,000',    short:'5K–10K' },
-  { v:'gt_10000',      l:'🏟️ 10,000+',            short:'10K+' },
+  { v: 'lt_500', l: '👤 Less than 500', short: '<500' },
+  { v: '500_2000', l: '👥 500 – 2,000', short: '500–2K' },
+  { v: '2000_5000', l: '👥 2,000 – 5,000', short: '2K–5K' },
+  { v: '5000_10000', l: '👥👥 5,000 – 10,000', short: '5K–10K' },
+  { v: 'gt_10000', l: '🏟️ 10,000+', short: '10K+' },
 ]
 
-const CORRIDORS = [
-  'Non-corridor', 'Mysore Road', 'Bellary Road 1', 'Bellary Road 2',
-  'Tumkur Road', 'Hosur Road', 'ORR North 1', 'ORR North 2',
-  'Old Madras Road', 'Magadi Road', 'ORR East 1', 'ORR East 2',
-  'ORR West 1', 'Bannerghata Road', 'West of Chord Road',
-  'Airport New South Road', 'Varthur Road', 'Hennur Main Road',
-]
 
-const ZONES = [
-  'Unknown', 'Central Zone 1', 'Central Zone 2', 'North Zone 1', 'North Zone 2',
-  'South Zone 1', 'South Zone 2', 'East Zone 1', 'East Zone 2',
-  'West Zone 1', 'West Zone 2',
-]
-
-const JUNCTIONS = [
-  'Unknown',
-  'MekhriCircle',
-  'AyyappaTempleJunc',
-  'SatteliteBusStandJunc',
-  'YeshwanthpuraCircle',
-  'YelhankaCircle',
-  'SilkBoardJunc',
-  'toll gate mysore road',
-  'Nagavara-ORR Junction',
-  'HebbalFlyoverJunc',
-  'KempegowdaCircle',
-  'TrinityCircle',
-  'DomlurJunc',
-  'KoramangalaJunc',
-  'MarathahalliJunc',
-  'KRPuramJunc',
-  'WhitefieldJunc',
-  'ElectronicCityJunc',
-  'BannerghataRoadJunc',
-  'JPNagarJunc',
-  'KengeriJunc',
-  'RajajinagarCircle',
-  'MalleshwaramCircle',
-  'HebbalCircle',
-  'TinFactoryJunc',
-  'BaiyyappanahalliBridge',
-  'HopefarmsJunc',
-  'VarthurJunc',
-  'SarjapurJunc',
-  'BellandurJunc',
-  'HSRLayoutJunc',
-]
 
 const inp = "w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-white text-sm focus:border-blue-500 focus:outline-none transition-colors"
 
 export default function IncidentForm({ onResult, apiBase }) {
+  const [corridors, setCorridors] = useState([])
+  const [zones, setZones] = useState([])
+  const [junctions, setJunctions] = useState([])
+
+  useEffect(() => {
+
+  axios.get(`${apiBase}/corridors`)
+    .then(r => {
+
+      setCorridors(r.data.corridors)
+
+      if (r.data.corridors.length > 0) {
+        setForm(f => ({
+          ...f,
+          corridor: r.data.corridors[0]
+        }))
+      }
+    })
+
+  axios.get(`${apiBase}/zones`)
+    .then(r => {
+
+      setZones(r.data.zones)
+
+      if (r.data.zones.length > 0) {
+        setForm(f => ({
+          ...f,
+          zone: r.data.zones[0]
+        }))
+      }
+    })
+
+  axios.get(`${apiBase}/junctions`)
+    .then(r => {
+
+      setJunctions(r.data.junctions)
+
+      if (r.data.junctions.length > 0) {
+        setForm(f => ({
+          ...f,
+          junction: r.data.junctions[0]
+        }))
+      }
+    })
+
+}, [])
   const [form, setForm] = useState({
     event_cause: 'accident',
     event_type: 'unplanned',
@@ -82,9 +82,9 @@ export default function IncidentForm({ onResult, apiBase }) {
     hour: new Date().getHours(),
     latitude: 12.97,
     longitude: 77.59,
-    corridor: 'Tumkur Road',
-    zone: 'Unknown',
-    junction: 'Unknown',
+    corridor: '',
+    zone: '',
+    junction: '',
     expected_attendance: 'lt_500',
   })
   const [loading, setLoading] = useState(false)
@@ -209,14 +209,26 @@ export default function IncidentForm({ onResult, apiBase }) {
       <div className="grid grid-cols-2 gap-3 mb-4">
         <div>
           <Label>Corridor</Label>
-          <select value={form.corridor} onChange={e => set('corridor', e.target.value)} className={inp}>
-            {CORRIDORS.map(c => <option key={c} value={c}>{c}</option>)}
+          <select
+            value={form.corridor}
+            onChange={e => set('corridor', e.target.value)}
+            className={inp}
+          >
+            {corridors.map(c => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
           </select>
         </div>
         <div>
           <Label>Zone</Label>
           <select value={form.zone} onChange={e => set('zone', e.target.value)} className={inp}>
-            {ZONES.map(z => <option key={z} value={z}>{z}</option>)}
+            {zones.map(z => (
+              <option key={z} value={z}>
+                {z}
+              </option>
+            ))}
           </select>
         </div>
       </div>
@@ -233,7 +245,11 @@ export default function IncidentForm({ onResult, apiBase }) {
           value={form.junction}
           onChange={e => set('junction', e.target.value)}
           className={inp}>
-          {JUNCTIONS.map(j => <option key={j} value={j}>{j}</option>)}
+          {junctions.map(j => (
+            <option key={j} value={j}>
+              {j}
+            </option>
+          ))}
         </select>
 
         {form.junction === 'Unknown' && (

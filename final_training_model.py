@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import warnings
 warnings.filterwarnings('ignore')
-
+MODEL_DIR = "../backend/models"
 # LOAD & PARSE 
 df = pd.read_csv(
     "D:/flipkart_grid2/Astram event data_anonymized - Astram event data_anonymizedb40ac87.csv"
@@ -247,7 +247,7 @@ print(
       .head(20)
 )
 
-# ML MODELS 
+# ML ../backend/models 
 import lightgbm as lgb
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingRegressor
@@ -576,7 +576,7 @@ importance.sort_values(
     "importance",
     ascending=False
 ).to_json(
-    "models/feature_importance.json",
+    "{MODEL_DIR}/feature_importance.json",
     orient="records"
 )
 from sklearn.metrics import classification_report
@@ -936,72 +936,72 @@ print("Output:")
 for k, v in result.items():
     print(f"  {k}: {v}")
 
-# SAVE MODELS & ARTIFACTS 
+# SAVE to {MODEL_DIR} & ARTIFACTS 
 import joblib, os
-os.makedirs("models", exist_ok=True)
+os.makedirs("{MODEL_DIR}", exist_ok=True)
 
-joblib.dump(model_closure, "models/closure_model.pkl")
-joblib.dump(encoders, "models/encoders.pkl")
+joblib.dump(model_closure, "{MODEL_DIR}/closure_model.pkl")
+joblib.dump(encoders, "{MODEL_DIR}/encoders.pkl")
 joblib.dump(junction_freq_map,
-            "models/junction_freq_map.pkl")
+            "{MODEL_DIR}/junction_freq_map.pkl")
 
 joblib.dump(corridor_freq_map,
-            "models/corridor_freq_map.pkl")
+            "{MODEL_DIR}/corridor_freq_map.pkl")
 
 joblib.dump(
     cluster_centers,
-    "models/cluster_centers.pkl"
+    "{MODEL_DIR}/cluster_centers.pkl"
 )
 
 joblib.dump(
     cluster_density_map,
-    "models/cluster_density_map.pkl"
+    "{MODEL_DIR}/cluster_density_map.pkl"
 )
 joblib.dump(
     cause_group_encoder,
-    "models/cause_group_encoder.pkl"
+    "{MODEL_DIR}/cause_group_encoder.pkl"
 )
 
 joblib.dump(
     le_hotspot,
-    "models/hotspot_encoder.pkl"
+    "{MODEL_DIR}/hotspot_encoder.pkl"
 )
 
 joblib.dump(
     le_hotspot_hour,
-    "models/hotspot_hour_encoder.pkl"
+    "{MODEL_DIR}/hotspot_hour_encoder.pkl"
 )
 
 joblib.dump(
     le_junction_hour,
-    "models/junction_hour_encoder.pkl"
+    "{MODEL_DIR}/junction_hour_encoder.pkl"
 )
 
 joblib.dump(
     le_corridor_hour,
-    "models/corridor_hour_encoder.pkl"
+    "{MODEL_DIR}/corridor_hour_encoder.pkl"
 )
 
 joblib.dump(
     cause_severity,
-    "models/cause_severity.pkl"
+    "{MODEL_DIR}/cause_severity.pkl"
 )
 joblib.dump(
     model_cause,
-    "models/cause_model.pkl"
+    "{MODEL_DIR}/cause_model.pkl"
 )
 joblib.dump(
     FEATURE_COLS,
-    "models/closure_features.pkl"
+    "{MODEL_DIR}/closure_features.pkl"
 )
 
 joblib.dump(
     CAUSE_FEATURES,
-    "models/cause_features.pkl"
+    "{MODEL_DIR}/cause_features.pkl"
 )
 joblib.dump(
     cluster_stats,
-    "models/cluster_stats.pkl"
+    "{MODEL_DIR}/cluster_stats.pkl"
 )
 
 metadata = {
@@ -1012,31 +1012,31 @@ metadata = {
 
 joblib.dump(
     metadata,
-    "models/model_metadata.pkl"
+    "{MODEL_DIR}/model_metadata.pkl"
 )
 
 # Save hotspot data for frontend map
 hotspot_export = cluster_stats.reset_index()
 hotspot_export.to_json(
-    "models/hotspots.json",
+    "{MODEL_DIR}/hotspots.json",
     orient="records"
 )
 hotspot_export.to_csv(
-    "models/hotspot_summary.csv",
+    "{MODEL_DIR}/hotspot_summary.csv",
     index=False
 )
 cluster_stats.reset_index().to_json(
-    "models/dashboard_hotspots.json",
+    "{MODEL_DIR}/dashboard_hotspots.json",
     orient="records"
 )
 
 # Save resource table
 import json
-with open("models/resource_table.json", "w") as f:
+with open("{MODEL_DIR}/resource_table.json", "w") as f:
     json.dump(RESOURCE_TABLE, f)
 
-print("\nAll models saved to models/")
-print("Files:", os.listdir("models"))
+print("\nAll {MODEL_DIR} saved to {MODEL_DIR}/")
+print("Files:", os.listdir("{MODEL_DIR}"))
 
 # ANALYTICS SUMMARY (for dashboard) 
 print("\n=== ANALYTICS SUMMARY ===")
