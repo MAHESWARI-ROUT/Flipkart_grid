@@ -16,6 +16,14 @@ const CAUSES = [
   { v: 'others', l: '❓ Others' },
 ]
 
+const ATTENDANCE_OPTIONS = [
+  { v:'lt_500',        l:'👤 Less than 500',     short:'<500' },
+  { v:'500_2000',      l:'👥 500 – 2,000',        short:'500–2K' },
+  { v:'2000_5000',     l:'👥 2,000 – 5,000',      short:'2K–5K' },
+  { v:'5000_10000',    l:'👥👥 5,000 – 10,000',    short:'5K–10K' },
+  { v:'gt_10000',      l:'🏟️ 10,000+',            short:'10K+' },
+]
+
 const CORRIDORS = [
   'Non-corridor', 'Mysore Road', 'Bellary Road 1', 'Bellary Road 2',
   'Tumkur Road', 'Hosur Road', 'ORR North 1', 'ORR North 2',
@@ -30,10 +38,8 @@ const ZONES = [
   'West Zone 1', 'West Zone 2',
 ]
 
-// Top junctions from your analytics data (top 8 shown first, then rest)
 const JUNCTIONS = [
   'Unknown',
-  // ── High-risk (from your analytics) ──
   'MekhriCircle',
   'AyyappaTempleJunc',
   'SatteliteBusStandJunc',
@@ -42,7 +48,6 @@ const JUNCTIONS = [
   'SilkBoardJunc',
   'toll gate mysore road',
   'Nagavara-ORR Junction',
-  // ── Other major junctions ──
   'HebbalFlyoverJunc',
   'KempegowdaCircle',
   'TrinityCircle',
@@ -80,6 +85,7 @@ export default function IncidentForm({ onResult, apiBase }) {
     corridor: 'Tumkur Road',
     zone: 'Unknown',
     junction: 'Unknown',
+    expected_attendance: 'lt_500',
   })
   const [loading, setLoading] = useState(false)
   const [err, setErr] = useState(null)
@@ -170,6 +176,35 @@ export default function IncidentForm({ onResult, apiBase }) {
         </div>
       </div>
 
+      {/* Expected Attendance */}
+      <div className="mb-4">
+        <Label>
+          Expected Attendance
+          <span className="ml-2 text-blue-400 normal-case font-normal text-xs">
+            — drives crowd-impact scoring
+          </span>
+        </Label>
+        <select
+          value={form.expected_attendance}
+          onChange={e => set('expected_attendance', e.target.value)}
+          className={inp}>
+          {ATTENDANCE_OPTIONS.map(a => (
+            <option key={a.v} value={a.v}>{a.l}</option>
+          ))}
+        </select>
+
+        {(form.expected_attendance === '5000_10000' || form.expected_attendance === 'gt_10000') && (
+          <p className="text-red-400 text-xs mt-1.5 flex items-center gap-1">
+            <span>🔴</span> Large crowd — expect significant resource scaling
+          </p>
+        )}
+        {(form.expected_attendance === '2000_5000') && (
+          <p className="text-yellow-400 text-xs mt-1.5 flex items-center gap-1">
+            <span>🟡</span> Moderate crowd — additional barricading recommended
+          </p>
+        )}
+      </div>
+
       {/* Corridor + Zone */}
       <div className="grid grid-cols-2 gap-3 mb-4">
         <div>
@@ -186,7 +221,7 @@ export default function IncidentForm({ onResult, apiBase }) {
         </div>
       </div>
 
-      {/* ✅ NEW: Junction dropdown */}
+      {/* Junction */}
       <div className="mb-4">
         <Label>
           Junction
@@ -201,7 +236,6 @@ export default function IncidentForm({ onResult, apiBase }) {
           {JUNCTIONS.map(j => <option key={j} value={j}>{j}</option>)}
         </select>
 
-        {/* Feedback hints */}
         {form.junction === 'Unknown' && (
           <p className="text-gray-600 text-xs mt-1.5 flex items-center gap-1">
             <span>⚠️</span> Select a junction for more accurate predictions
@@ -235,7 +269,7 @@ export default function IncidentForm({ onResult, apiBase }) {
         </div>
       </div>
 
-      {/* Road closure toggle */}
+      {/* Road closure toggle — FIXED */}
       <div className="mb-5 flex items-center justify-between bg-gray-800 rounded-lg px-4 py-3 border border-gray-700">
         <div>
           <p className="text-white text-sm font-medium">Requires Road Closure</p>
@@ -243,10 +277,10 @@ export default function IncidentForm({ onResult, apiBase }) {
         </div>
         <button
           onClick={() => set('requires_road_closure', !form.requires_road_closure)}
-          className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0
+          className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0
             ${form.requires_road_closure ? 'bg-red-600' : 'bg-gray-600'}`}>
-          <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform
-            ${form.requires_road_closure ? 'translate-x-6' : 'translate-x-0.5'}`} />
+          <span className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200
+            ${form.requires_road_closure ? 'translate-x-5' : 'translate-x-0'}`} />
         </button>
       </div>
 

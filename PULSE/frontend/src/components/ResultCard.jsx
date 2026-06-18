@@ -168,6 +168,30 @@ export default function ResultCard({ result }) {
           </div>
         </div>
       )}
+            
+
+      {/* Smart Diversion Generator */}
+      {result.diversion_plan?.length > 0 && (
+        <div className="bg-black bg-opacity-25 rounded-lg p-4 border border-blue-700">
+          <h3 className="text-blue-400 font-semibold mb-3">
+            🚧 Smart Diversion Generator
+          </h3>
+
+          <div className="space-y-2">
+            {result.diversion_plan.map((item, idx) => (
+              <div
+                key={idx}
+                className="text-sm text-gray-300 flex items-start gap-2"
+              >
+                <span>➡️</span>
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      
 
       {/* ── Explainability ── */}
       <div className="bg-black bg-opacity-20 rounded-lg p-3 text-xs text-gray-400">
