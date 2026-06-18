@@ -2,32 +2,32 @@ import { useState } from 'react'
 import axios from 'axios'
 
 const CAUSES = [
-  { v:'accident',          l:'🚗 Accident' },
-  { v:'vehicle_breakdown', l:'🔧 Vehicle Breakdown' },
-  { v:'construction',      l:'🏗️ Construction' },
-  { v:'water_logging',     l:'💧 Water Logging' },
-  { v:'tree_fall',         l:'🌳 Tree Fall' },
-  { v:'pot_holes',         l:'🕳️ Pot Holes' },
-  { v:'congestion',        l:'🚦 Congestion' },
-  { v:'public_event',      l:'🎪 Public Event' },
-  { v:'procession',        l:'🚶 Procession' },
-  { v:'rare_event',        l:'⭐ VIP / Protest / Debris' },
-  { v:'road_conditions',   l:'🛣️ Road Conditions' },
-  { v:'others',            l:'❓ Others' },
+  { v: 'accident', l: '🚗 Accident' },
+  { v: 'vehicle_breakdown', l: '🔧 Vehicle Breakdown' },
+  { v: 'construction', l: '🏗️ Construction' },
+  { v: 'water_logging', l: '💧 Water Logging' },
+  { v: 'tree_fall', l: '🌳 Tree Fall' },
+  { v: 'pot_holes', l: '🕳️ Pot Holes' },
+  { v: 'congestion', l: '🚦 Congestion' },
+  { v: 'public_event', l: '🎪 Public Event' },
+  { v: 'procession', l: '🚶 Procession' },
+  { v: 'rare_event', l: '⭐ VIP / Protest / Debris' },
+  { v: 'road_conditions', l: '🛣️ Road Conditions' },
+  { v: 'others', l: '❓ Others' },
 ]
 
 const CORRIDORS = [
-  'Non-corridor','Mysore Road','Bellary Road 1','Bellary Road 2',
-  'Tumkur Road','Hosur Road','ORR North 1','ORR North 2',
-  'Old Madras Road','Magadi Road','ORR East 1','ORR East 2',
-  'ORR West 1','Bannerghata Road','West of Chord Road',
-  'Airport New South Road','Varthur Road','Hennur Main Road',
+  'Non-corridor', 'Mysore Road', 'Bellary Road 1', 'Bellary Road 2',
+  'Tumkur Road', 'Hosur Road', 'ORR North 1', 'ORR North 2',
+  'Old Madras Road', 'Magadi Road', 'ORR East 1', 'ORR East 2',
+  'ORR West 1', 'Bannerghata Road', 'West of Chord Road',
+  'Airport New South Road', 'Varthur Road', 'Hennur Main Road',
 ]
 
 const ZONES = [
-  'Unknown','Central Zone 1','Central Zone 2','North Zone 1','North Zone 2',
-  'South Zone 1','South Zone 2','East Zone 1','East Zone 2',
-  'West Zone 1','West Zone 2',
+  'Unknown', 'Central Zone 1', 'Central Zone 2', 'North Zone 1', 'North Zone 2',
+  'South Zone 1', 'South Zone 2', 'East Zone 1', 'East Zone 2',
+  'West Zone 1', 'West Zone 2',
 ]
 
 // Top junctions from your analytics data (top 8 shown first, then rest)
@@ -99,14 +99,45 @@ export default function IncidentForm({ onResult, apiBase }) {
     }
   }
 
+  const downloadPDF = async () => {
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/export-report",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form),
+        }
+      );
+
+      const blob = await response.blob();
+
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+
+      a.href = url;
+      a.download = "incident_report.pdf";
+
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const Label = ({ children }) => (
     <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wide mb-1.5">
       {children}
     </label>
   )
 
-  const isHighRiskJunction = ['MekhriCircle','AyyappaTempleJunc','SatteliteBusStandJunc',
-    'YeshwanthpuraCircle','YelhankaCircle','SilkBoardJunc'].includes(form.junction)
+  const isHighRiskJunction = ['MekhriCircle', 'AyyappaTempleJunc', 'SatteliteBusStandJunc',
+    'YeshwanthpuraCircle', 'YelhankaCircle', 'SilkBoardJunc'].includes(form.junction)
 
   return (
     <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
@@ -239,6 +270,12 @@ export default function IncidentForm({ onResult, apiBase }) {
         ) : (
           '⚡ Predict Impact & Get Resource Plan'
         )}
+      </button>
+      <button
+        onClick={downloadPDF}
+        className="w-full mt-3 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold"
+      >
+        📄 Export Incident Report
       </button>
     </div>
   )

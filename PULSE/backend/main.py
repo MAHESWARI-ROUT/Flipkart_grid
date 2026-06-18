@@ -5,6 +5,8 @@ from pydantic import BaseModel, Field
 from typing import Optional
 import os, json
 from predictor import load_models, predict, get_analytics
+from fastapi.responses import FileResponse
+from pdf_generator import generate_incident_pdf
 
 app = FastAPI(
     title="PULSE API",
@@ -91,3 +93,57 @@ def zones():
             "West Zone 1","West Zone 2","Unknown"
         ]
     }
+
+@app.post("/export-report")
+def export_report(req: IncidentRequest):
+
+     result = predict(req.dict())
+
+     
+
+     pdf_data = {
+    # Incident Inputs
+    "Incident Type": req.event_cause,
+    "Event Type": req.event_type,
+    "Corridor": req.corridor,
+    "Zone": req.zone,
+    "Junction": req.junction,
+    "Hour": req.hour,
+    "Road Closure Reported": "Yes" if req.requires_road_closure else "No",
+
+    # Prediction Outputs
+    "Severity": result["severity"],
+    "Impact Score": result["impact_score"],
+    "Congestion Risk": f"{result['congestion_risk']}%",
+    "Road Closure Probability": f"{result['road_closure_probability']}%",
+    "Officers Required": result["officers_needed"],
+    "Barricades Required": result["barricades_needed"],
+    "Diversion Required": "Yes" if result["diversion_needed"] else "No",
+    "Estimated Delay": f"{result['estimated_delay_mins']} mins",
+    "Vehicles Affected": result["vehicles_affected_est"],
+
+    # Explainability
+    "Prediction Drivers": result["prediction_drivers"],
+    "Prediction Explanation": result["prediction_explanation"],
+
+    # Actions
+    "Actions": result["actions"],
+
+    # Spatial Intelligence
+    "Junction Frequency": result["junction_freq"],
+    "Corridor Frequency": result["corridor_freq"],
+    "Hotspot Density": result["hotspot_density"]
+}
+
+     output_file = "incident_report.pdf"
+
+     generate_incident_pdf(
+        pdf_data,
+        output_file
+    )
+
+     return FileResponse(
+        output_file,
+        media_type="application/pdf",
+        filename="incident_report.pdf"
+    )

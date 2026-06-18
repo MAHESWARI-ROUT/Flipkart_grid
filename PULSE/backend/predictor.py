@@ -234,7 +234,7 @@ def predict(data: dict) -> dict:
     cause_display = cause.replace("_", " ").title()
 
     drivers.append({
-    "name": f"{cause_display} Incident Severity",
+    "name": f"{cause_display} Severity",
     "score": sev * 5
 })
 
