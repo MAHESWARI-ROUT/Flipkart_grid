@@ -1,0 +1,14 @@
+[
+  {
+    "incident_type": "accident",
+    "corridor": "Tumkur Road",
+    "zone": "Unknown",
+    "junction": "Unknown",
+    "severity": "HIGH",
+    "impact_score": 60.0,
+    "officers_needed": 8,
+    "barricades_needed": 4,
+    "id": "56642358-5cfa-42e8-85ab-3cad1f8edb48",
+    "timestamp": "18-Jun-2026 18:38"
+  }
+]

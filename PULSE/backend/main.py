@@ -6,7 +6,9 @@ import os, json
 from predictor import load_models, predict, get_analytics
 from fastapi.responses import FileResponse
 from pdf_generator import generate_incident_pdf
-
+from feedback_store import save_feedback, load_feedback
+from feedback_store import calculate_feedback_stats
+from incident_store import save_incident, load_incidents
 app = FastAPI(
     title="PULSE API",
     description="PULSE — Predictive Urban Live Situation Engine for Bengaluru",
@@ -45,6 +47,14 @@ class IncidentRequest(BaseModel):
         example="2000_5000",
         description="One of: lt_500, 500_2000, 2000_5000, 5000_10000, gt_10000",
     )
+class FeedbackRequest(BaseModel):
+    predicted_severity: str
+    actual_severity: str
+    officers_recommended: int
+    officers_deployed: int
+    barricades_used: int
+    diversion_effective: bool
+    comments: Optional[str] = ""
 
 # Endpoints
 @app.get("/")
@@ -58,7 +68,18 @@ def health():
 @app.post("/predict")
 def predict_incident(req: IncidentRequest):
     try:
-        return predict(req.dict())
+        result = predict(req.dict())
+        save_incident({
+        "incident_type": req.event_cause,
+        "corridor": req.corridor,
+        "zone": req.zone,
+        "junction": req.junction,
+        "severity": result["severity"],
+        "impact_score": result["impact_score"],
+        "officers_needed": result["officers_needed"],
+        "barricades_needed": result["barricades_needed"]
+    })
+        return result
     except AssertionError as e:
         raise HTTPException(status_code=500, detail=str(e))
     except Exception as e:
@@ -152,4 +173,20 @@ def export_report(req: IncidentRequest):
         media_type="application/pdf",
         filename="incident_report.pdf"
     )
+@app.post("/feedback")
+def submit_feedback(req: FeedbackRequest):
+    save_feedback(req.dict())
+
+    return {
+        "status": "success",
+        "message": "Feedback saved"
+    }
+
+@app.get("/feedback-stats")
+def feedback_stats():
+    return calculate_feedback_stats()
+
+@app.get("/incident-history")
+def incident_history():
+    return load_incidents()
     

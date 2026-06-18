@@ -5,6 +5,8 @@ import ResourcePanel from './components/ResourcePanel'
 import Map from './components/Map'
 import Analytics from './components/Analytics'
 import axios from 'axios'
+import FeedbackForm from './components/FeedbackForm'
+import IncidentHistory from "./components/IncidentHistory";
 
 const API = 'http://localhost:8000'
 
@@ -13,14 +15,17 @@ export default function App() {
   const [result, setResult] = useState(null)
   const [apiOk, setApiOk] = useState(null)
 
+
   useEffect(() => {
     axios.get(`${API}/health`).then(() => setApiOk(true)).catch(() => setApiOk(false))
   }, [])
 
   const tabs = [
-    { id:'predict',   icon:'⚡', label:'Predict' },
-    { id:'map',       icon:'🗺️', label:'Hotspot Map' },
-    { id:'analytics', icon:'📊', label:'Analytics' },
+    { id: 'predict', icon: '⚡', label: 'Predict' },
+    { id: 'map', icon: '🗺️', label: 'Hotspot Map' },
+    { id: 'analytics', icon: '📊', label: 'Analytics' },
+    { id: 'history', icon: '📜', label: 'Incident History' },
+
   ]
 
   return (
@@ -35,13 +40,11 @@ export default function App() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div className={`flex items-center gap-2 text-xs px-3 py-1.5 rounded-full border ${
-            apiOk === true  ? 'text-green-400 bg-green-950 border-green-800' :
+          <div className={`flex items-center gap-2 text-xs px-3 py-1.5 rounded-full border ${apiOk === true ? 'text-green-400 bg-green-950 border-green-800' :
             apiOk === false ? 'text-red-400 bg-red-950 border-red-800' :
-                              'text-gray-400 bg-gray-800 border-gray-700'}`}>
-            <span className={`w-2 h-2 rounded-full ${
-              apiOk === true ? 'bg-green-400 animate-pulse' :
-              apiOk === false ? 'bg-red-400' : 'bg-gray-500'}`}/>
+              'text-gray-400 bg-gray-800 border-gray-700'}`}>
+            <span className={`w-2 h-2 rounded-full ${apiOk === true ? 'bg-green-400 animate-pulse' :
+              apiOk === false ? 'bg-red-400' : 'bg-gray-500'}`} />
             {apiOk === true ? 'API Connected' : apiOk === false ? 'API Offline' : 'Connecting…'}
           </div>
         </div>
@@ -79,6 +82,7 @@ export default function App() {
                   <>
                     <ResultCard result={result} />
                     <ResourcePanel result={result} />
+                    
                   </>
                 ) : (
                   <div className="bg-gray-900 border border-gray-800 rounded-xl p-10 flex flex-col items-center justify-center text-center h-full min-h-64">
@@ -91,8 +95,15 @@ export default function App() {
             </div>
           </div>
         )}
-        {tab === 'map'       && <Map apiBase={API} />}
-        {tab === 'analytics' && <Analytics apiBase={API} />}
+        {tab === 'map' && <Map apiBase={API} />}
+
+        {tab === 'analytics' && (
+          <Analytics apiBase={API} />
+        )}
+
+        {tab === 'history' && (
+          <IncidentHistory />
+        )}
       </main>
     </div>
   )
