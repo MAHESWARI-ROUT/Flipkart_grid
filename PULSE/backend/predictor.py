@@ -139,6 +139,29 @@ def _actions(cause: str, severity: str, road_closure: bool) -> list:
         a.append("Verify work permit and enforce timeline")
     return a
 
+def _generate_diversion_plan(corridor, junction, severity,
+                             road_closure, congestion_risk):
+
+    plans = []
+
+    if road_closure:
+        plans.append(f"Divert traffic away from {junction}")
+        plans.append("Activate nearby service roads")
+        plans.append("Deploy temporary barricades")
+
+    if congestion_risk >= 60:
+        plans.append("Use alternate ORR route")
+        plans.append("Optimize nearby traffic signals")
+
+    if severity in ("HIGH", "CRITICAL"):
+        plans.append("Deploy additional traffic officers")
+        plans.append("Broadcast traffic advisory")
+
+    if corridor:
+        plans.append(f"Monitor traffic flow on {corridor}")
+
+    return plans
+
 
 # MAIN PREDICT FUNCTION 
 def predict(data: dict) -> dict:
@@ -223,12 +246,21 @@ def predict(data: dict) -> dict:
 
     #  Resources 
     res = _recommend(cause, impact, closure_pred or rc, is_peak, is_major)
+   
 
     #  Congestion risk (same formula as training) 
     congestion_risk = min(
         0.4 * impact + 20 * is_peak + 15 * is_major + 10 * int(closure_pred or rc),
         100
     )
+
+    diversion_plan = _generate_diversion_plan(
+    corridor,
+    junction,
+    severity,
+    closure_pred or rc,
+    congestion_risk
+)
     drivers = []
 
     cause_display = cause.replace("_", " ").title()
@@ -303,7 +335,9 @@ def predict(data: dict) -> dict:
         "vehicles_affected_est":      int(impact * 85),
         # Actions
         "actions":                    _actions(cause, severity, closure_pred or rc),
-        # ✅ NEW — spatial intelligence features exposed for UI
+        "diversion_plan":             diversion_plan,
+
+       # ✅ NEW — spatial intelligence features exposed for UI
         "junction_freq":              round(float(jf), 4),
         "corridor_freq":              round(float(cf), 4),
         "hotspot_density":            round(float(hd), 4),
