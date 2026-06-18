@@ -282,11 +282,11 @@ def predict(data: dict) -> dict:
 
     # Prediction drivers
     cause_display = cause.replace("_", " ").title()
-
-    drivers.append({
+    drivers = [{
     "name": f"{cause_display} Severity",
     "score": sev * 5
-})
+}]
+    
 
 
     if closure_pred or rc:
