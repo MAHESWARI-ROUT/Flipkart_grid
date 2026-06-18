@@ -1,4 +1,3 @@
-
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -25,21 +24,27 @@ MODEL_DIR = os.path.join(os.path.dirname(__file__), "models")
 def startup():
     load_models(MODEL_DIR)
 
-#  Request schema 
+# Request schema
 class IncidentRequest(BaseModel):
-    event_cause:            str   = Field(..., example="accident")
+    event_cause:            str             = Field(..., example="accident")
     event_type:             Optional[str]   = Field("unplanned", example="unplanned")
     requires_road_closure:  Optional[bool]  = Field(False)
-    hour:                   int   = Field(..., ge=0, le=23, example=8)
+    hour:                   int             = Field(..., ge=0, le=23, example=8)
     minute:                 Optional[int]   = Field(None, ge=0, le=59)
     month:                  Optional[int]   = Field(None, ge=1, le=12)
-    latitude:               Optional[float] = Field(12.97,  example=13.04)
-    longitude:              Optional[float] = Field(77.59,  example=77.52)
+    latitude:               Optional[float] = Field(12.97, example=13.04)
+    longitude:              Optional[float] = Field(77.59, example=77.52)
     corridor:               Optional[str]   = Field("Non-corridor")
     zone:                   Optional[str]   = Field("Unknown")
     junction:               Optional[str]   = Field("Unknown")
+    # NEW: crowd-size bucket for event-attendance impact scoring
+    expected_attendance:    Optional[str]   = Field(
+        "lt_500",
+        example="2000_5000",
+        description="One of: lt_500, 500_2000, 2000_5000, 5000_10000, gt_10000",
+    )
 
-#  Endpoints 
+# Endpoints
 @app.get("/")
 def root():
     return {"message": "PULSE API v2", "docs": "/docs"}

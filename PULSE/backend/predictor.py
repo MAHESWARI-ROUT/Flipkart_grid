@@ -1,5 +1,3 @@
-
-
 import joblib, json, os
 import numpy as np
 from datetime import datetime
@@ -7,7 +5,7 @@ from datetime import datetime
 _m = {}   # model registry
 
 
-# LOAD 
+# LOAD
 def load_models(model_dir: str = "./models"):
     _m["closure"]          = joblib.load(f"{model_dir}/closure_model.pkl")
     _m["encoders"]         = joblib.load(f"{model_dir}/encoders.pkl")
@@ -26,7 +24,7 @@ def load_models(model_dir: str = "./models"):
     print("✅ All models loaded")
 
 
-# HELPERS 
+# HELPERS
 def _enc(col: str, val: str) -> int:
     le = _m["encoders"][col]
     v  = val if val in le.classes_ else le.classes_[0]
@@ -42,7 +40,7 @@ def _get_nearest_cluster(lat: float, lon: float) -> int:
     return best
 
 
-#  IMPACT SCORE — domain-expert formula (same as training) 
+# IMPACT SCORE — domain-expert formula (same as training)
 def _impact_score(cause_severity: int, road_closure: bool,
                   is_major: int, is_peak: int) -> float:
     score = (
@@ -54,15 +52,9 @@ def _impact_score(cause_severity: int, road_closure: bool,
     return float(min(max(score, 0), 100))
 
 
-#  PRIORITY — rule-based (explainable, no leaking model) 
+# PRIORITY — rule-based (explainable, no leaking model)
 def _priority_rule(impact: float, cause: str,
                    is_major: int, road_closure: bool) -> tuple:
-    """
-    Domain-expert rules derived from data analysis:
-      - rare_event / accident on major corridor → almost always High
-      - impact >= 50 → High
-    Returns (label, confidence_pct)
-    """
     HIGH_CAUSES = {"accident", "rare_event", "public_event", "procession"}
     if road_closure and is_major:
         return "High", 92.0
@@ -75,7 +67,7 @@ def _priority_rule(impact: float, cause: str,
     return "Low", round(conf, 1)
 
 
-#  RESOURCE RECOMMENDATION 
+# RESOURCE RECOMMENDATION
 RESOURCE_TABLE_DEFAULT = {
     "accident":          (4, 2, True),
     "rare_event":        (5, 3, True),
@@ -91,8 +83,24 @@ RESOURCE_TABLE_DEFAULT = {
     "others":            (2, 1, False),
 }
 
-def _recommend(cause: str, impact: float,
-               road_closure: bool, is_peak: int, is_major: int) -> dict:
+# NEW: Attendance buckets → (impact_points, resource_multiplier, label)
+ATTENDANCE_TABLE = {
+    "lt_500":     {"points": 0,  "mult": 1.0,  "label": "Less than 500"},
+    "500_2000":   {"points": 8,  "mult": 1.15, "label": "500 - 2,000"},
+    "2000_5000":  {"points": 15, "mult": 1.35, "label": "2,000 - 5,000"},
+    "5000_10000": {"points": 22, "mult": 1.6,  "label": "5,000 - 10,000"},
+    "gt_10000":   {"points": 30, "mult": 2.0,  "label": "10,000+"},
+}
+
+def _attendance_info(expected_attendance: str) -> dict:
+    return ATTENDANCE_TABLE.get(
+        str(expected_attendance), ATTENDANCE_TABLE["lt_500"]
+    )
+
+
+def _recommend(cause: str, impact: float, road_closure: bool,
+               is_peak: int, is_major: int,
+               attendance_mult: float = 1.0) -> dict:
     rt = _m.get("resource_table", {})
     base = rt.get(cause, None)
     if base:
@@ -109,6 +117,9 @@ def _recommend(cause: str, impact: float,
     if is_major:       mult += 0.2
     if road_closure:   mult += 0.5
 
+    # Crowd-size scaling stacks multiplicatively
+    mult *= attendance_mult
+
     import math
     return {
         "officers_needed":   math.ceil(officers   * mult),
@@ -117,7 +128,8 @@ def _recommend(cause: str, impact: float,
     }
 
 
-def _actions(cause: str, severity: str, road_closure: bool) -> list:
+def _actions(cause: str, severity: str, road_closure: bool,
+             attendance_key: str = "lt_500") -> list:
     a = []
     if severity in ("CRITICAL", "HIGH"):
         a.append("Dispatch officers immediately")
@@ -137,63 +149,71 @@ def _actions(cause: str, severity: str, road_closure: bool) -> list:
         a.append("Alert BBMP drainage team")
     if cause == "construction":
         a.append("Verify work permit and enforce timeline")
+    # NEW: crowd-specific actions
+    if attendance_key in ("5000_10000", "gt_10000"):
+        a.append("Request additional traffic police battalion")
+        a.append("Set up barricaded pedestrian corridors")
+    elif attendance_key == "2000_5000":
+        a.append("Deploy extra barricades at entry/exit points")
     return a
 
+
 def _generate_diversion_plan(corridor, junction, severity,
-                             road_closure, congestion_risk):
-
+                              road_closure, congestion_risk):
     plans = []
-
     if road_closure:
         plans.append(f"Divert traffic away from {junction}")
         plans.append("Activate nearby service roads")
         plans.append("Deploy temporary barricades")
-
     if congestion_risk >= 60:
         plans.append("Use alternate ORR route")
         plans.append("Optimize nearby traffic signals")
-
     if severity in ("HIGH", "CRITICAL"):
         plans.append("Deploy additional traffic officers")
         plans.append("Broadcast traffic advisory")
-
     if corridor:
         plans.append(f"Monitor traffic flow on {corridor}")
-
     return plans
 
 
-# MAIN PREDICT FUNCTION 
+# MAIN PREDICT FUNCTION
 def predict(data: dict) -> dict:
-    
+
     now      = datetime.now()
     cause    = str(data.get("event_cause", "others")).lower().strip()
     etype    = str(data.get("event_type", "unplanned"))
     corridor = str(data.get("corridor", "Non-corridor"))
     zone     = str(data.get("zone", "Unknown"))
-    junction = str(data.get("junction","Unknown"))
-    hour = int(data.get("hour") or now.hour)
+    junction = str(data.get("junction", "Unknown"))
+    hour     = int(data.get("hour") or now.hour)
 
     minute = (
-    int(data["minute"])
-    if data.get("minute") is not None
-    else now.minute
-)
-
+        int(data["minute"])
+        if data.get("minute") is not None
+        else now.minute
+    )
     month = (
-    int(data["month"])
-    if data.get("month") is not None
-    else now.month
-)
-    lat      = float(data.get("latitude",  12.97))
-    lon      = float(data.get("longitude", 77.59))
-    rc       = bool(data.get("requires_road_closure", False))
-    dow      = now.weekday()
-    is_wknd  = int(dow >= 5)
+        int(data["month"])
+        if data.get("month") is not None
+        else now.month
+    )
+
+    lat     = float(data.get("latitude",  12.97))
+    lon     = float(data.get("longitude", 77.59))
+    rc      = bool(data.get("requires_road_closure", False))
+    dow     = now.weekday()
+    is_wknd = int(dow >= 5)
+
+    # NEW: Expected attendance bucket (crowd-size signal)
+    attendance_key   = str(data.get("expected_attendance", "lt_500"))
+    attendance_info  = _attendance_info(attendance_key)
+    attendance_points = attendance_info["points"]
+    attendance_mult  = attendance_info["mult"]
+    attendance_label = attendance_info["label"]
 
     # Derived flags
-    is_peak  = int(hour in [7,8,9,17,18,19,20,21])
-    is_night = int(hour in [22,23,0,1,2,3,4,5])
+    is_peak  = int(hour in [7, 8, 9, 17, 18, 19, 20, 21])
+    is_night = int(hour in [22, 23, 0, 1, 2, 3, 4, 5])
     is_major = int(corridor not in ("Non-corridor", "Unknown", ""))
 
     # Cause severity (from saved map, same as training)
@@ -205,7 +225,7 @@ def predict(data: dict) -> dict:
     cf = _m["corridor_freq"].get(corridor,
          float(np.mean(list(_m["corridor_freq"].values()))))
 
-    # Hotspot density via nearest cluster (fixes train/inference inconsistency)
+    # Hotspot density via nearest cluster
     nearest = _get_nearest_cluster(lat, lon)
     hd      = _m["cluster_density"].get(nearest,
               float(np.mean(list(_m["cluster_density"].values()))))
@@ -217,7 +237,7 @@ def predict(data: dict) -> dict:
     enc_zone     = _enc("zone",        zone)
     enc_junction = _enc("junction",    junction)
 
-    #  Model B: Road Closure (ML) 
+    # Model B: Road Closure (ML)
     closure_row = np.array([[
         enc_cause, enc_type, hour, minute, dow, month,
         is_wknd, is_peak, is_night, is_major,
@@ -231,91 +251,83 @@ def predict(data: dict) -> dict:
     closure_prob = float(_m["closure"].predict_proba(closure_row)[0][1])
     closure_pred = bool(closure_prob > 0.30)
 
-    #  Impact Score (domain-expert formula) ]
-    impact = _impact_score(sev, closure_pred or rc, is_major, is_peak)
+    # Impact Score — now includes attendance points
+    base_impact = _impact_score(sev, closure_pred or rc, is_major, is_peak)
+    impact = float(min(max(base_impact + attendance_points, 0), 100))
 
-    #  Priority (rule-based) 
-    priority_label, priority_conf = _priority_rule(impact, cause, is_major,
-                                                    closure_pred or rc)
+    # Priority (rule-based)
+    priority_label, priority_conf = _priority_rule(
+        impact, cause, is_major, closure_pred or rc)
 
-    #  Severity bucket 
+    # Severity bucket
     if impact >= 75:   severity = "CRITICAL"
     elif impact >= 50: severity = "HIGH"
     elif impact >= 25: severity = "MEDIUM"
     else:              severity = "LOW"
 
-    #  Resources 
-    res = _recommend(cause, impact, closure_pred or rc, is_peak, is_major)
-   
+    # Resources — scaled by attendance_mult
+    res = _recommend(cause, impact, closure_pred or rc, is_peak, is_major,
+                     attendance_mult=attendance_mult)
 
-    #  Congestion risk (same formula as training) 
+    # Congestion risk — attendance-aware
     congestion_risk = min(
-        0.4 * impact + 20 * is_peak + 15 * is_major + 10 * int(closure_pred or rc),
+        0.4 * impact + 20 * is_peak + 15 * is_major
+        + 10 * int(closure_pred or rc) + 0.3 * attendance_points,
         100
     )
 
+    # Diversion plan
     diversion_plan = _generate_diversion_plan(
-    corridor,
-    junction,
-    severity,
-    closure_pred or rc,
-    congestion_risk
-)
-    drivers = []
+        corridor, junction, severity, closure_pred or rc, congestion_risk)
 
+    # Prediction drivers
     cause_display = cause.replace("_", " ").title()
-
-    drivers.append({
-    "name": f"{cause_display} Incident Severity",
-    "score": sev * 5
-})
-
+    drivers = [{"name": f"{cause_display} Incident Severity", "score": sev * 5}]
     if closure_pred or rc:
-       drivers.append({
-        "name": "Road Closure",
-        "score": 20
-    })
-
+        drivers.append({"name": "Road Closure",         "score": 20})
     if is_major:
-       drivers.append({
-    "name": "Major Traffic Corridor",
-    "score": 10
-})
-
+        drivers.append({"name": "Major Traffic Corridor", "score": 10})
     if is_peak:
-       drivers.append({
-        "name": "Peak Hour",
-        "score": 5
-    })
+        drivers.append({"name": "Peak Hour",             "score": 5})
+    if attendance_points > 0:
+        drivers.append({"name": "Expected Attendance",   "score": attendance_points})
+    drivers = sorted(drivers, key=lambda x: x["score"], reverse=True)
 
-    drivers = sorted(
-    drivers,
-    key=lambda x: x["score"],
-    reverse=True
-)
+    # Impact contributors breakdown (for explainability panel)
+    impact_contributors = [
+        {"label": "Cause Severity", "points": round(sev * 5, 1)},
+        {"label": "Road Closure",   "points": 20 if (closure_pred or rc) else 0},
+        {"label": "Major Corridor", "points": 10 if is_major else 0},
+        {"label": "Peak Hour",      "points": 5  if is_peak  else 0},
+        {"label": "Attendance",     "points": attendance_points},
+    ]
+    impact_contributors = sorted(
+        [c for c in impact_contributors if c["points"] > 0],
+        key=lambda c: c["points"], reverse=True
+    )
+
+    # Explanation text
     explanation = []
-
     if closure_pred or rc:
-       explanation.append("road closure")
-
+        explanation.append("road closure")
     if is_major:
-      explanation.append("major traffic corridor")
-
+        explanation.append("major traffic corridor")
     if is_peak:
-       explanation.append("peak-hour traffic")
-
+        explanation.append("peak-hour traffic")
     if sev >= 5:
-       explanation.append("high incident severity")
+        explanation.append("high incident severity")
+    if attendance_points >= 15:
+        explanation.append("large expected attendance")
 
     if explanation:
-       explanation_text = (
-        "High impact driven by " +
-        ", ".join(explanation[:-1]) +
-        (" and " + explanation[-1] if len(explanation) > 1 else explanation[0])
-        + "."
-    )
+        explanation_text = (
+            "High impact driven by "
+            + ", ".join(explanation[:-1])
+            + (" and " + explanation[-1] if len(explanation) > 1 else explanation[0])
+            + "."
+        )
     else:
-     explanation_text = "Moderate traffic impact expected."
+        explanation_text = "Moderate traffic impact expected."
 
     return {
         # Core predictions
@@ -334,18 +346,25 @@ def predict(data: dict) -> dict:
         "estimated_delay_mins":       {"CRITICAL":30,"HIGH":20,"MEDIUM":10,"LOW":5}[severity],
         "vehicles_affected_est":      int(impact * 85),
         # Actions
-        "actions":                    _actions(cause, severity, closure_pred or rc),
+        "actions":                    _actions(cause, severity, closure_pred or rc, attendance_key),
         "diversion_plan":             diversion_plan,
-
-       # ✅ NEW — spatial intelligence features exposed for UI
+        # Spatial intelligence
         "junction_freq":              round(float(jf), 4),
         "corridor_freq":              round(float(cf), 4),
         "hotspot_density":            round(float(hd), 4),
-        "prediction_drivers": drivers,
-        "prediction_explanation": explanation_text,
+        # Drivers & explanation
+        "prediction_drivers":         drivers,
+        "prediction_explanation":     explanation_text,
+        # NEW — attendance impact details
+        "expected_attendance":        attendance_key,
+        "expected_attendance_label":  attendance_label,
+        "attendance_impact_points":   attendance_points,
+        "attendance_resource_mult":   attendance_mult,
+        "impact_contributors":        impact_contributors,
     }
 
-#  ANALYTICS (pre-computed from training data) 
+
+# ANALYTICS (pre-computed from training data)
 ANALYTICS = {
     "total_incidents":     8173,
     "high_priority_count": 5030,
@@ -375,24 +394,24 @@ ANALYTICS = {
         "21":810,"22":564,"23":495
     },
     "top_junctions": [
-        {"junction":"MekhriCircle",              "count":64},
-        {"junction":"AyyappaTempleJunc",          "count":49},
-        {"junction":"SatteliteBusStandJunc",      "count":43},
-        {"junction":"YeshwanthpuraCircle",        "count":38},
-        {"junction":"YelhankaCircle",             "count":34},
-        {"junction":"SilkBoardJunc",              "count":33},
-        {"junction":"toll gate mysore road",      "count":33},
-        {"junction":"Nagavara-ORR Junction",      "count":32},
+        {"junction":"MekhriCircle",          "count":64},
+        {"junction":"AyyappaTempleJunc",      "count":49},
+        {"junction":"SatteliteBusStandJunc",  "count":43},
+        {"junction":"YeshwanthpuraCircle",    "count":38},
+        {"junction":"YelhankaCircle",         "count":34},
+        {"junction":"SilkBoardJunc",          "count":33},
+        {"junction":"toll gate mysore road",  "count":33},
+        {"junction":"Nagavara-ORR Junction",  "count":32},
     ],
     "top_corridors": [
-        {"corridor":"Mysore Road",        "count":743, "risk":46.9},
-        {"corridor":"Bellary Road 1",     "count":610, "risk":46.1},
-        {"corridor":"Tumkur Road",        "count":458, "risk":46.0},
-        {"corridor":"Bellary Road 2",     "count":379, "risk":47.2},
-        {"corridor":"Hosur Road",         "count":298, "risk":46.6},
-        {"corridor":"ORR North 1",        "count":275, "risk":46.2},
-        {"corridor":"ORR East 1",         "count":244, "risk":48.1},
-        {"corridor":"ORR East 2",         "count":187, "risk":52.2},
+        {"corridor":"Mysore Road",     "count":743, "risk":46.9},
+        {"corridor":"Bellary Road 1",  "count":610, "risk":46.1},
+        {"corridor":"Tumkur Road",     "count":458, "risk":46.0},
+        {"corridor":"Bellary Road 2",  "count":379, "risk":47.2},
+        {"corridor":"Hosur Road",      "count":298, "risk":46.6},
+        {"corridor":"ORR North 1",     "count":275, "risk":46.2},
+        {"corridor":"ORR East 1",      "count":244, "risk":48.1},
+        {"corridor":"ORR East 2",      "count":187, "risk":52.2},
     ],
     "cause_impact": {
         "public_event":51.4,"rare_event":50.2,"accident":47.8,
