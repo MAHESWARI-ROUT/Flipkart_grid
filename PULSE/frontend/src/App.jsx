@@ -5,8 +5,8 @@ import ResourcePanel from './components/ResourcePanel'
 import Map from './components/Map'
 import Analytics from './components/Analytics'
 import axios from 'axios'
-import FeedbackForm from './components/FeedbackForm'
 import IncidentHistory from "./components/IncidentHistory";
+import EventPlanner from "./components/EventPlanner";
 
 const API = 'http://localhost:8000'
 
@@ -15,36 +15,42 @@ export default function App() {
   const [result, setResult] = useState(null)
   const [apiOk, setApiOk] = useState(null)
 
-
   useEffect(() => {
     axios.get(`${API}/health`).then(() => setApiOk(true)).catch(() => setApiOk(false))
   }, [])
 
   const tabs = [
-    { id: 'predict', icon: '⚡', label: 'Predict' },
-    { id: 'map', icon: '🗺️', label: 'Hotspot Map' },
-    { id: 'analytics', icon: '📊', label: 'Analytics' },
-    { id: 'history', icon: '📜', label: 'Incident History' },
-
+    { id: 'predict',  icon: '⚡',  label: 'Predict' },
+    { id: 'planner',  icon: '📅',  label: 'Event Planner' },
+    { id: 'map',      icon: '🗺️', label: 'Hotspot Map' },
+    { id: 'analytics',icon: '📊',  label: 'Analytics' },
+    { id: 'history',  icon: '📜',  label: 'Incident History' },
   ]
 
   return (
     <div className="min-h-screen bg-gray-950 flex flex-col">
+
       {/* ── Header ── */}
       <header className="bg-gray-900 border-b border-gray-800 px-6 py-3 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center text-lg shadow-lg">🚦</div>
+          <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center text-lg shadow-lg">
+            🚦
+          </div>
           <div>
             <h1 className="font-bold text-white text-lg leading-none">PULSE</h1>
             <p className="text-gray-400 text-xs">Predictive Urban Live Situation Engine · Bengaluru</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div className={`flex items-center gap-2 text-xs px-3 py-1.5 rounded-full border ${apiOk === true ? 'text-green-400 bg-green-950 border-green-800' :
-            apiOk === false ? 'text-red-400 bg-red-950 border-red-800' :
-              'text-gray-400 bg-gray-800 border-gray-700'}`}>
-            <span className={`w-2 h-2 rounded-full ${apiOk === true ? 'bg-green-400 animate-pulse' :
-              apiOk === false ? 'bg-red-400' : 'bg-gray-500'}`} />
+          <div className={`flex items-center gap-2 text-xs px-3 py-1.5 rounded-full border ${
+            apiOk === true  ? 'text-green-400 bg-green-950 border-green-800'  :
+            apiOk === false ? 'text-red-400 bg-red-950 border-red-800'        :
+                              'text-gray-400 bg-gray-800 border-gray-700'
+          }`}>
+            <span className={`w-2 h-2 rounded-full ${
+              apiOk === true  ? 'bg-green-400 animate-pulse' :
+              apiOk === false ? 'bg-red-400'                 : 'bg-gray-500'
+            }`} />
             {apiOk === true ? 'API Connected' : apiOk === false ? 'API Offline' : 'Connecting…'}
           </div>
         </div>
@@ -52,13 +58,17 @@ export default function App() {
 
       {/* ── Tabs ── */}
       <div className="bg-gray-900 border-b border-gray-800 px-6">
-        <div className="flex gap-1">
+        <div className="flex gap-1 overflow-x-auto">
           {tabs.map(t => (
-            <button key={t.id} onClick={() => setTab(t.id)}
-              className={`px-5 py-3 text-sm font-medium border-b-2 transition-all
-                ${tab === t.id
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className={`px-5 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-all ${
+                tab === t.id
                   ? 'border-blue-500 text-blue-400'
-                  : 'border-transparent text-gray-400 hover:text-gray-200'}`}>
+                  : 'border-transparent text-gray-400 hover:text-gray-200'
+              }`}
+            >
               {t.icon} {t.label}
             </button>
           ))}
@@ -67,6 +77,8 @@ export default function App() {
 
       {/* ── Content ── */}
       <main className="flex-1 p-6 max-w-7xl mx-auto w-full">
+
+        {/* Predict tab */}
         {tab === 'predict' && (
           <div>
             <div className="mb-6">
@@ -82,7 +94,6 @@ export default function App() {
                   <>
                     <ResultCard result={result} />
                     <ResourcePanel result={result} />
-                    
                   </>
                 ) : (
                   <div className="bg-gray-900 border border-gray-800 rounded-xl p-10 flex flex-col items-center justify-center text-center h-full min-h-64">
@@ -95,15 +106,19 @@ export default function App() {
             </div>
           </div>
         )}
+
+        {/* Event Planner tab — NEW */}
+        {tab === 'planner' && <EventPlanner apiBase={API} />}
+
+        {/* Hotspot Map tab */}
         {tab === 'map' && <Map apiBase={API} />}
 
-        {tab === 'analytics' && (
-          <Analytics apiBase={API} />
-        )}
+        {/* Analytics tab */}
+        {tab === 'analytics' && <Analytics apiBase={API} />}
 
-        {tab === 'history' && (
-          <IncidentHistory />
-        )}
+        {/* Incident History tab */}
+        {tab === 'history' && <IncidentHistory />}
+
       </main>
     </div>
   )

@@ -16,5 +16,14 @@
     "barricades_used": 4,
     "diversion_effective": true,
     "comments": ""
+  },
+  {
+    "predicted_severity": "HIGH",
+    "actual_severity": "HIGH",
+    "officers_recommended": 10,
+    "officers_deployed": 10,
+    "barricades_used": 6,
+    "diversion_effective": true,
+    "comments": "prediction was almost perfect"
   }
 ]

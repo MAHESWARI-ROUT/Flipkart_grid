@@ -106,5 +106,53 @@
     "barricades_needed": 4,
     "id": "2673f5d8-55bf-4bbd-b710-ee99920a7455",
     "timestamp": "19-Jun-2026 12:35"
+  },
+  {
+    "incident_type": "accident",
+    "corridor": "Airport New South Road",
+    "zone": "Central Zone 1",
+    "junction": "17th Mn 1st Crs Aishwarya Stores Jn",
+    "severity": "HIGH",
+    "impact_score": 55.0,
+    "officers_needed": 7,
+    "barricades_needed": 4,
+    "id": "66178fce-4c62-4798-b021-2e69c9f1797a",
+    "timestamp": "19-Jun-2026 12:43"
+  },
+  {
+    "incident_type": "accident",
+    "corridor": "Airport New South Road",
+    "zone": "Central Zone 1",
+    "junction": "17th Mn 1st Crs Aishwarya Stores Jn",
+    "severity": "HIGH",
+    "impact_score": 55.0,
+    "officers_needed": 7,
+    "barricades_needed": 4,
+    "id": "f2bed76a-756a-4107-ba36-0f2c4dbd306a",
+    "timestamp": "19-Jun-2026 14:05"
+  },
+  {
+    "incident_type": "public_event",
+    "corridor": "Hennur Main Road",
+    "zone": "Unknown",
+    "junction": "Unknown",
+    "severity": "HIGH",
+    "impact_score": 58.0,
+    "officers_needed": 10,
+    "barricades_needed": 6,
+    "id": "0fb41dd4-d879-4488-8185-7ce773636d00",
+    "timestamp": "19-Jun-2026 14:26"
+  },
+  {
+    "incident_type": "public_event",
+    "corridor": "Non-corridor",
+    "zone": "Unknown",
+    "junction": "Unknown",
+    "severity": "HIGH",
+    "impact_score": 60.0,
+    "officers_needed": 13,
+    "barricades_needed": 8,
+    "id": "62e92750-1f18-40bc-aae9-358edab8dadb",
+    "timestamp": "19-Jun-2026 14:28"
   }
 ]
