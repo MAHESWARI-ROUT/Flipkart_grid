@@ -10,5 +10,29 @@
     "barricades_needed": 4,
     "id": "56642358-5cfa-42e8-85ab-3cad1f8edb48",
     "timestamp": "18-Jun-2026 18:38"
+  },
+  {
+    "incident_type": "accident",
+    "corridor": "Airport New South Road",
+    "zone": "Central Zone 1",
+    "junction": "17th Mn 1st Crs Aishwarya Stores Jn",
+    "severity": "CRITICAL",
+    "impact_score": 75.0,
+    "officers_needed": 10,
+    "barricades_needed": 5,
+    "id": "1b7a9d87-e254-4482-8b28-2c0d781e6ce1",
+    "timestamp": "19-Jun-2026 21:24"
+  },
+  {
+    "incident_type": "public_event",
+    "corridor": "Magadi Road",
+    "zone": "Unknown",
+    "junction": "Indiranasgar13thMainJunc",
+    "severity": "CRITICAL",
+    "impact_score": 85.0,
+    "officers_needed": 17,
+    "barricades_needed": 11,
+    "id": "f9c8d283-ad45-4145-a1ab-e11ee0ebc4c6",
+    "timestamp": "19-Jun-2026 21:25"
   }
 ]
