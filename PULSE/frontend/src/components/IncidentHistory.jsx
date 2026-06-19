@@ -27,7 +27,7 @@ export default function IncidentHistory() {
                 >
 
                     <h3 className="text-white font-bold">
-                        {incident.incident_type}
+                        {incident.incident_gitype}
                     </h3>
 
                     <p className="text-gray-400">
@@ -46,28 +46,44 @@ export default function IncidentHistory() {
                         {incident.timestamp}
                     </p>
                     <button
-                        onClick={() => setSelectedIncident(incident)}
-                        className="mt-3 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm"
-                    >
-                        Give Feedback
-                    </button>
+    onClick={() =>
+        setSelectedIncident(
+            selectedIncident?.id === incident.id
+                ? null
+                : incident
+        )
+    }
+    className={`mt-3 text-white px-3 py-2 rounded-lg text-sm ${
+        selectedIncident?.id === incident.id
+            ? "bg-red-600 hover:bg-red-700"
+            : "bg-blue-600 hover:bg-blue-700"
+    }`}
+>
+    {selectedIncident?.id === incident.id
+        ? "Close Feedback"
+        : "Give Feedback"}
+</button>
+{selectedIncident?.id === incident.id && (
+    <div className="mt-5 border-t border-gray-700 pt-5">
+
+        
+        <FeedbackForm
+            incidentId={incident.id}
+            result={{
+                severity: incident.severity,
+                officers_needed: incident.officers_needed,
+                barricades_needed: incident.barricades_needed
+            }}
+        />
+
+    </div>
+)}
 
 
                 </div>
 
             ))}
-            {selectedIncident && (
-                <div className="mt-6">
-                    <FeedbackForm
-                        incidentId={selectedIncident.id}
-                        result={{
-                            severity: selectedIncident.severity,
-                            officers_needed: selectedIncident.officers_needed,
-                            barricades_needed: selectedIncident.barricades_needed
-                        }}
-                    />
-                </div>
-            )}
+            
 
         </div>
     );
