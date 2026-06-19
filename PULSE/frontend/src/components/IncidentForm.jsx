@@ -310,19 +310,17 @@ export default function IncidentForm({ onResult, apiBase }) {
 
         {/* Minutes */}
         <label className="text-gray-400 text-sm block mb-2">
-          Minutes
+          Minutes — {String(form.minute).padStart(2, "0")}
         </label>
 
-        <select
+        <input
+          type="range"
+          min="0"
+          max="59"
           value={form.minute}
           onChange={e => set('minute', parseInt(e.target.value))}
-          className={inp}
-        >
-          <option value={0}>00</option>
-          <option value={15}>15</option>
-          <option value={30}>30</option>
-          <option value={45}>45</option>
-        </select>
+          className="w-full accent-blue-500 cursor-pointer"
+        />
       </div>
 
       {/* Road closure toggle — FIXED */}

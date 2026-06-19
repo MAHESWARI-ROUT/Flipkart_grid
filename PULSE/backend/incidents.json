@@ -82,5 +82,29 @@
     "barricades_needed": 4,
     "id": "ae2a2a59-f379-42e2-9e80-0166f415cb41",
     "timestamp": "18-Jun-2026 20:54"
+  },
+  {
+    "incident_type": "accident",
+    "corridor": "Airport New South Road",
+    "zone": "Central Zone 1",
+    "junction": "17th Mn 1st Crs Aishwarya Stores Jn",
+    "severity": "HIGH",
+    "impact_score": 55.0,
+    "officers_needed": 7,
+    "barricades_needed": 4,
+    "id": "d241e8c4-a47a-4a6a-a96a-9955366215f2",
+    "timestamp": "19-Jun-2026 12:35"
+  },
+  {
+    "incident_type": "accident",
+    "corridor": "Airport New South Road",
+    "zone": "Central Zone 1",
+    "junction": "17th Mn 1st Crs Aishwarya Stores Jn",
+    "severity": "HIGH",
+    "impact_score": 55.0,
+    "officers_needed": 7,
+    "barricades_needed": 4,
+    "id": "2673f5d8-55bf-4bbd-b710-ee99920a7455",
+    "timestamp": "19-Jun-2026 12:35"
   }
 ]
