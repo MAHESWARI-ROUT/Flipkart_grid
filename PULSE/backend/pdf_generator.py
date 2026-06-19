@@ -215,9 +215,9 @@ Immediate deployment is recommended to minimize network disruption and maintain 
     story.append(
     Paragraph(
         f"""
-        🔴 Junction Risk Level: {junction_risk}<br/>
-        🔴 Corridor Risk Level: {corridor_risk}<br/>
-        🔴 Hotspot Activity: {hotspot_risk}
+        Junction Risk Level: {junction_risk}<br/>
+        Corridor Risk Level: {corridor_risk}<br/>
+        Hotspot Activity: {hotspot_risk}
         """,
         styles["Normal"]
     )
