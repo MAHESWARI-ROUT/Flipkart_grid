@@ -56,6 +56,21 @@ const FeatureBar = ({ label, value, color, tooltip }) => {
 export default function ResultCard({ result }) {
   const s = SEV[result.severity] || SEV.LOW
   const ringColor = RING_COLORS[result.severity] || '#22c55e'
+  const confidence = result.priority_confidence || 0
+
+const confidenceColor =
+  confidence >= 90
+    ? 'text-green-400'
+    : confidence >= 70
+      ? 'text-yellow-400'
+      : 'text-red-400'
+
+const confidenceLabel =
+  confidence >= 90
+    ? '🟢 High Confidence'
+    : confidence >= 70
+      ? '🟡 Medium Confidence'
+      : '🔴 Low Confidence'
 
   // ✅ Spatial features from backend
   const jf = result.junction_freq ?? null
@@ -117,6 +132,35 @@ export default function ResultCard({ result }) {
           </div>
         </div>
       )}
+      {/* Prediction Confidence */}
+<div className="bg-black bg-opacity-30 rounded-lg p-3">
+  <div className="flex justify-between items-center">
+    <span className="text-gray-400 text-xs">
+      Prediction Confidence
+    </span>
+
+    <span className={`font-bold ${confidenceColor}`}>
+      {confidence}%
+    </span>
+  </div>
+
+  <div className="w-full bg-gray-700 rounded-full h-2 mt-2">
+    <div
+      className={`h-2 rounded-full transition-all duration-700 ${
+        confidence >= 90
+          ? 'bg-green-500'
+          : confidence >= 70
+          ? 'bg-yellow-500'
+          : 'bg-red-500'
+      }`}
+      style={{ width: `${confidence}%` }}
+    />
+  </div>
+
+  <p className={`text-xs mt-2 ${confidenceColor}`}>
+    {confidenceLabel}
+  </p>
+</div>
 
       {/* ── ✅ NEW: Spatial Intelligence / Hotspot Explanation ── */}
       {hasFeatures && (
@@ -215,6 +259,10 @@ export default function ResultCard({ result }) {
         </div>
         <p className="text-sm text-orange-300 mt-3 mb-2">
           {result.prediction_explanation}
+        </p>
+        <p className="text-xs text-cyan-300 mt-2">
+        Confidence reflects how strongly this incident
+        matches historical traffic patterns and hotspot data.
         </p>
         <p className="text-xs text-gray-400 mt-2">
           Cause severity × 5 + Road closure × 20 +
