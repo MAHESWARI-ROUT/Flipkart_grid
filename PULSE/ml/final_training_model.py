@@ -182,22 +182,40 @@ cluster_stats = (
         lon=('longitude','mean'),
         high_priority_rate=('is_peak_hour','mean'),
         road_closure_rate=('requires_road_closure','mean'),
-        avg_impact=('impact_score','mean'),
+        avg_impact=('impact_score', 'mean'),
         top_cause=('event_cause', lambda x: x.mode()[0])
     )
     .sort_values('count', ascending=False)
     .head(20)
 )
+
 print("\nTop hotspot clusters:")
 print(cluster_stats.to_string())
+
 cluster_stats_all = (
     df[df['hotspot_cluster'] >= 0]
     .groupby('hotspot_cluster')
     .agg(
         count=('id','count'),
         lat=('latitude','mean'),
-        lon=('longitude','mean')
+        lon=('longitude','mean'),
+        high_priority_rate=('is_peak_hour','mean'),
+        road_closure_rate=('requires_road_closure','mean'),
+        avg_impact=('impact_score','mean'),
+        top_cause=('event_cause', lambda x: x.mode()[0])
     )
+)
+
+cluster_stats_all["avg_impact"] = (
+    (cluster_stats_all["avg_impact"] - cluster_stats_all["avg_impact"].min())
+    /
+    (cluster_stats_all["avg_impact"].max() - cluster_stats_all["avg_impact"].min())
+) * 100
+
+cluster_stats = (
+    cluster_stats_all
+    .sort_values("count", ascending=False)
+    .head(20)
 )
 cluster_centers = (
     cluster_stats_all[['lat', 'lon']]
