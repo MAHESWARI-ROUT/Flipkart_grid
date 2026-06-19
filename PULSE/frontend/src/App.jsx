@@ -8,7 +8,7 @@ import axios from 'axios'
 import IncidentHistory from "./components/IncidentHistory";
 import EventPlanner from "./components/EventPlanner";
 
-const API = 'http://localhost:8000'
+const API = import.meta.env.VITE_API_BASE
 
 export default function App() {
   const [tab, setTab] = useState('predict')

@@ -4,23 +4,26 @@ import axios from "axios";
 export default function FeedbackForm({ result, incidentId, onSubmitted }) {
 
   const [form, setForm] = useState({
-    incident_id:          incidentId,
-    predicted_severity:   result.severity,
-    actual_severity:      result.severity,   // default to predicted — officer changes if wrong
+    incident_id: incidentId,
+    predicted_severity: result.severity,
+    actual_severity: result.severity,   // default to predicted — officer changes if wrong
     officers_recommended: result.officers_needed,
-    officers_deployed:    result.officers_needed,
-    barricades_used:      result.barricades_needed,
-    diversion_effective:  true,
-    comments:             "",
+    officers_deployed: result.officers_needed,
+    barricades_used: result.barricades_needed,
+    diversion_effective: true,
+    comments: "",
   });
 
   const [submitted, setSubmitted] = useState(false);
-  const [loading,   setLoading]   = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const submit = async () => {
     setLoading(true);
     try {
-      await axios.post("http://localhost:8000/feedback", form);
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE}/feedback`,
+        form
+      );
       setSubmitted(true);
       if (onSubmitted) onSubmitted();
     } catch {
@@ -91,7 +94,7 @@ export default function FeedbackForm({ result, incidentId, onSubmitted }) {
         {select(
           "diversion_effective",
           [
-            { value: true,  label: "Yes — diversion worked" },
+            { value: true, label: "Yes — diversion worked" },
             { value: false, label: "No — diversion failed" },
           ],
           "Was diversion effective?"
@@ -99,8 +102,8 @@ export default function FeedbackForm({ result, incidentId, onSubmitted }) {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        {numInput("officers_deployed",    "Officers actually deployed", 0, 50)}
-        {numInput("barricades_used",      "Barricades actually used",   0, 50)}
+        {numInput("officers_deployed", "Officers actually deployed", 0, 50)}
+        {numInput("barricades_used", "Barricades actually used", 0, 50)}
       </div>
 
       {field("Comments (optional)", (

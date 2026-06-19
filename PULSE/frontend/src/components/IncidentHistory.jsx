@@ -15,11 +15,11 @@ export default function IncidentHistory() {
     useEffect(() => {
 
         axios
-            .get("http://127.0.0.1:8000/incident-history")
+            .get('${import.meta.env.VITE_API_BASE}/incident-history')
             .then(res => setIncidents(res.data));
 
         axios
-            .get("http://127.0.0.1:8000/feedback-stats")
+            .get('${import.meta.env.VITE_API_BASE}/feedback-stats')
             .then(res => setFeedbackStats(res.data))
             .catch(console.error);
 
