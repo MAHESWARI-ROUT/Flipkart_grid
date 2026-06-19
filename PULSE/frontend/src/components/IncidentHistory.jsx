@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import FeedbackForm from "./FeedbackForm";
 import axios from "axios";
-
+const API = import.meta.env.VITE_API_BASE;
 export default function IncidentHistory() {
 
     const [incidents, setIncidents] = useState([]);
@@ -15,11 +15,11 @@ export default function IncidentHistory() {
     useEffect(() => {
 
         axios
-            .get('${import.meta.env.VITE_API_BASE}/incident-history')
+            .get(`${API}/incident-history`)
             .then(res => setIncidents(res.data));
 
         axios
-            .get('${import.meta.env.VITE_API_BASE}/feedback-stats')
+            .get(`${API}/feedback-stats`)
             .then(res => setFeedbackStats(res.data))
             .catch(console.error);
 
