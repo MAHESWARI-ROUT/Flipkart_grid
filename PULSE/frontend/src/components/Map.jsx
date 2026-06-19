@@ -4,13 +4,16 @@ import axios from 'axios'
 import 'leaflet/dist/leaflet.css'
 
 const color = (impact) =>
-  impact >= 75 ? '#ef4444' : impact >= 50 ? '#f97316' : impact >= 25 ? '#eab308' : '#22c55e'
+  impact >= 55 ? '#ef4444'
+  : impact >= 50 ? '#f97316'
+  : impact >= 40 ? '#eab308'
+  : '#22c55e'
 
 const LEGEND = [
-  { c:'#ef4444', l:'Critical (75–100)' },
-  { c:'#f97316', l:'High (50–74)' },
-  { c:'#eab308', l:'Medium (25–49)' },
-  { c:'#22c55e', l:'Low (0–24)' },
+  { c:'#ef4444', l:'Critical (55+)' },
+  { c:'#f97316', l:'High (50–54)' },
+  { c:'#eab308', l:'Medium (40–49)' },
+  { c:'#22c55e', l:'Low (<40)' },
 ]
 
 export default function Map({ apiBase }) {
@@ -27,10 +30,10 @@ export default function Map({ apiBase }) {
   const filtered = filter === 'all' ? hotspots
     : hotspots.filter(h => {
         const i = h.avg_impact || 0
-        if (filter==='critical') return i >= 75
-        if (filter==='high')     return i >= 50 && i < 75
-        if (filter==='medium')   return i >= 25 && i < 50
-        return i < 25
+        if (filter==='critical') return i >= 55
+if (filter==='high')     return i >= 50 && i < 55
+if (filter==='medium')   return i >= 40 && i < 50
+return i < 40
       })
 
   return (
