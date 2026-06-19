@@ -35,51 +35,52 @@ export default function IncidentForm({ onResult, apiBase }) {
 
   useEffect(() => {
 
-  axios.get(`${apiBase}/corridors`)
-    .then(r => {
+    axios.get(`${apiBase}/corridors`)
+      .then(r => {
 
-      setCorridors(r.data.corridors)
+        setCorridors(r.data.corridors)
 
-      if (r.data.corridors.length > 0) {
-        setForm(f => ({
-          ...f,
-          corridor: r.data.corridors[0]
-        }))
-      }
-    })
+        if (r.data.corridors.length > 0) {
+          setForm(f => ({
+            ...f,
+            corridor: r.data.corridors[0]
+          }))
+        }
+      })
 
-  axios.get(`${apiBase}/zones`)
-    .then(r => {
+    axios.get(`${apiBase}/zones`)
+      .then(r => {
 
-      setZones(r.data.zones)
+        setZones(r.data.zones)
 
-      if (r.data.zones.length > 0) {
-        setForm(f => ({
-          ...f,
-          zone: r.data.zones[0]
-        }))
-      }
-    })
+        if (r.data.zones.length > 0) {
+          setForm(f => ({
+            ...f,
+            zone: r.data.zones[0]
+          }))
+        }
+      })
 
-  axios.get(`${apiBase}/junctions`)
-    .then(r => {
+    axios.get(`${apiBase}/junctions`)
+      .then(r => {
 
-      setJunctions(r.data.junctions)
+        setJunctions(r.data.junctions)
 
-      if (r.data.junctions.length > 0) {
-        setForm(f => ({
-          ...f,
-          junction: r.data.junctions[0]
-        }))
-      }
-    })
+        if (r.data.junctions.length > 0) {
+          setForm(f => ({
+            ...f,
+            junction: r.data.junctions[0]
+          }))
+        }
+      })
 
-}, [])
+  }, [])
   const [form, setForm] = useState({
     event_cause: 'accident',
     event_type: 'unplanned',
     requires_road_closure: false,
     hour: new Date().getHours(),
+    minute: 0,
     latitude: 12.97,
     longitude: 77.59,
     corridor: '',
@@ -269,20 +270,59 @@ export default function IncidentForm({ onResult, apiBase }) {
         )}
       </div>
 
-      {/* Hour */}
+      {/* Time */}
       <div className="mb-4">
         <Label>
           Time of Incident —&nbsp;
-          <span className="text-white normal-case font-bold">{form.hour}:00</span>
-          {[7, 8, 9, 17, 18, 19, 20, 21].includes(form.hour) &&
-            <span className="ml-2 text-yellow-400 normal-case">⚠️ Peak Hour</span>}
+          <span className="text-white normal-case font-bold">
+            {String(form.hour).padStart(2, "0")}:
+            {String(form.minute).padStart(2, "0")}
+          </span>
+
+          {[7, 8, 9, 17, 18, 19, 20, 21].includes(form.hour) && (
+            <span className="ml-2 text-yellow-400 normal-case">
+              ⚠️ Peak Hour
+            </span>
+          )}
         </Label>
-        <input type="range" min="0" max="23" value={form.hour}
+
+        {/* Hour */}
+        <label className="text-gray-400 text-sm block mb-2">
+          Hour
+        </label>
+
+        <input
+          type="range"
+          min="0"
+          max="23"
+          value={form.hour}
           onChange={e => set('hour', parseInt(e.target.value))}
-          className="w-full accent-blue-500 cursor-pointer" />
-        <div className="flex justify-between text-gray-600 text-xs mt-1">
-          <span>12 AM</span><span>6 AM</span><span>12 PM</span><span>6 PM</span><span>11 PM</span>
+          className="w-full accent-blue-500 cursor-pointer"
+        />
+
+        <div className="flex justify-between text-gray-600 text-xs mt-1 mb-4">
+          <span>12 AM</span>
+          <span>6 AM</span>
+          <span>12 PM</span>
+          <span>6 PM</span>
+          <span>11 PM</span>
         </div>
+
+        {/* Minutes */}
+        <label className="text-gray-400 text-sm block mb-2">
+          Minutes
+        </label>
+
+        <select
+          value={form.minute}
+          onChange={e => set('minute', parseInt(e.target.value))}
+          className={inp}
+        >
+          <option value={0}>00</option>
+          <option value={15}>15</option>
+          <option value={30}>30</option>
+          <option value={45}>45</option>
+        </select>
       </div>
 
       {/* Road closure toggle — FIXED */}
