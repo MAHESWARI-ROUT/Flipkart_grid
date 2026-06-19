@@ -90,8 +90,18 @@ export default function Analytics({ apiBase }) {
         <p className="text-white font-semibold mb-3 text-sm">🤖 Model Performance</p>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
-            { l: 'Priority System', v: 'Rule-Based', sub: '100% explainable', c: 'text-green-400' },
-            { l: 'Impact Score', v: 'Formula', sub: 'Domain-expert derived', c: 'text-blue-400' },
+            {
+  l: 'Decision Engine',
+  v: 'Hybrid AI',
+  sub: 'Rules + ML + Spatial Signals',
+  c: 'text-green-400'
+},
+{
+  l: 'Impact Engine',
+  v: 'Multi-Factor Scoring',
+  sub: 'Severity + Traffic + Location',
+  c: 'text-blue-400'
+},
             {
               l: 'Road Closure AUC', v: `${Math.round((data.model_b_auc || 0.75) * 100)}%`,
               sub: 'LightGBM classifier', c: 'text-yellow-400'

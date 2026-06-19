@@ -29,6 +29,24 @@ export default function IncidentHistory() {
                     <h3 className="text-white font-bold">
                         {incident.incident_gitype}
                     </h3>
+                    <div className="mt-2 mb-3">
+
+    {incident.junction &&
+        incident.junction !== "Unknown" && (
+            <p className="text-blue-300 text-sm">
+                📍 {incident.junction}
+            </p>
+        )}
+
+    {incident.corridor &&
+        incident.corridor !== "Unknown" &&
+        incident.corridor !== "Non-corridor" && (
+            <p className="text-orange-300 text-sm mt-1">
+                🛣 {incident.corridor}
+            </p>
+        )}
+
+</div>
 
                     <p className="text-gray-400">
                         Severity: {incident.severity}
