@@ -319,10 +319,10 @@ The formula is intentionally transparent — any operator can audit it without M
 
 | Problem | Fix |
 |---|---|
-| API Offline badge showing | Backend not running — Backend is already live — visit https://flipkart-grid-30ud.onrender.com |
+| API Offline badge showing | Backend is already live — visit https://flipkart-grid-30ud.onrender.com directly. No local setup needed. |
 | `ModuleNotFoundError` on startup | `pip install -r requirements.txt` inside the backend folder |
 | Model files missing error | Run `python final_training_model.py` first (Step 1) |
-| CORS error in browser console | Ensure backend is on port 8000 exactly |
+| CORS error in browser console | Frontend and backend are both live and pre-configured. No CORS issues expected. |
 | Map not loading | Leaflet CSS loads from CDN — check internet connection |
 | `npm install` fails | Use Node.js 18+, check with `node --version` |
 
