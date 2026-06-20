@@ -115,7 +115,7 @@ export default function IncidentForm({ onResult, apiBase }) {
   const downloadPDF = async () => {
     try {
       const response = await fetch(
-        '${import.meta.env.VITE_API_BASE}/export-report',
+  `${import.meta.env.VITE_API_BASE}/export-report`,
         {
           method: "POST",
           headers: {
