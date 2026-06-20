@@ -30,7 +30,7 @@ export default function Analytics({ apiBase }) {
     .then(r => setData(r.data))
     .catch(() => {})
 
-  axios.get('${import.meta.env.VITE_API_BASE}/feedback-stats')
+ axios.get(`${import.meta.env.VITE_API_BASE}/feedback-stats`)
     .then(res => setFeedbackStats(res.data))
     .catch(console.error)
 
