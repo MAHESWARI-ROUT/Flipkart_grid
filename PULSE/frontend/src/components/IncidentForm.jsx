@@ -79,8 +79,14 @@ export default function IncidentForm({ onResult, apiBase }) {
     event_cause: 'accident',
     event_type: 'unplanned',
     requires_road_closure: false,
+
     hour: new Date().getHours(),
-    minute: 0,
+    minute: new Date().getMinutes(),
+
+    day_of_week: new Date().getDay(),
+
+    month: new Date().getMonth() + 1,
+
     latitude: 12.97,
     longitude: 77.59,
     corridor: '',
@@ -321,6 +327,56 @@ export default function IncidentForm({ onResult, apiBase }) {
           onChange={e => set('minute', parseInt(e.target.value))}
           className="w-full accent-blue-500 cursor-pointer"
         />
+        <div className="grid grid-cols-2 gap-3 mt-4">
+
+          {/* Day */}
+          <div>
+            <label className="text-gray-400 text-sm block mb-2">
+              Day
+            </label>
+
+            <select
+              value={form.day_of_week}
+              onChange={e => set('day_of_week', parseInt(e.target.value))}
+              className={inp}
+            >
+              <option value={0}>Sunday</option>
+              <option value={1}>Monday</option>
+              <option value={2}>Tuesday</option>
+              <option value={3}>Wednesday</option>
+              <option value={4}>Thursday</option>
+              <option value={5}>Friday</option>
+              <option value={6}>Saturday</option>
+            </select>
+          </div>
+
+          {/* Month */}
+          <div>
+            <label className="text-gray-400 text-sm block mb-2">
+              Month
+            </label>
+
+            <select
+              value={form.month}
+              onChange={e => set('month', parseInt(e.target.value))}
+              className={inp}
+            >
+              <option value={1}>January</option>
+              <option value={2}>February</option>
+              <option value={3}>March</option>
+              <option value={4}>April</option>
+              <option value={5}>May</option>
+              <option value={6}>June</option>
+              <option value={7}>July</option>
+              <option value={8}>August</option>
+              <option value={9}>September</option>
+              <option value={10}>October</option>
+              <option value={11}>November</option>
+              <option value={12}>December</option>
+            </select>
+          </div>
+
+        </div>
       </div>
 
       {/* Road closure toggle — FIXED */}

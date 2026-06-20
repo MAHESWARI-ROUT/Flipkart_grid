@@ -218,7 +218,12 @@ def predict(data: dict) -> dict:
     lat     = float(data.get("latitude",  12.97))
     lon     = float(data.get("longitude", 77.59))
     rc      = bool(data.get("requires_road_closure", False))
-    dow     = now.weekday()
+    dow = int(
+    data.get(
+        "day_of_week",
+        now.weekday()
+    )
+)
     is_wknd = int(dow >= 5)
 
     # NEW: Expected attendance bucket (crowd-size signal)
