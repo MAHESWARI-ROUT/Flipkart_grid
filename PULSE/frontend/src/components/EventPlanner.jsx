@@ -4,25 +4,25 @@ import axios from "axios";
 const API = import.meta.env.VITE_API_BASE
 
 const ATTENDANCE_OPTIONS = [
-  { value: "lt_500",     label: "Less than 500",    icon: "👥", officers_hint: "Small gathering" },
-  { value: "500_2000",   label: "500 – 2,000",      icon: "👥", officers_hint: "Moderate crowd" },
-  { value: "2000_5000",  label: "2,000 – 5,000",    icon: "👫", officers_hint: "Large crowd" },
-  { value: "5000_10000", label: "5,000 – 10,000",   icon: "🎪", officers_hint: "Very large event" },
-  { value: "gt_10000",   label: "10,000+",           icon: "🏟️", officers_hint: "Mass gathering" },
+  { value: "lt_500", label: "Less than 500", icon: "👥", officers_hint: "Small gathering" },
+  { value: "500_2000", label: "500 – 2,000", icon: "👥", officers_hint: "Moderate crowd" },
+  { value: "2000_5000", label: "2,000 – 5,000", icon: "👫", officers_hint: "Large crowd" },
+  { value: "5000_10000", label: "5,000 – 10,000", icon: "🎪", officers_hint: "Very large event" },
+  { value: "gt_10000", label: "10,000+", icon: "🏟️", officers_hint: "Mass gathering" },
 ];
 
 const EVENT_TYPES = [
   { value: "public_event", label: "Public Event / Festival", icon: "🎭" },
-  { value: "procession",   label: "Procession / Rally",      icon: "🚶" },
-  { value: "rare_event",   label: "VIP Movement / Protest",  icon: "⚠️" },
-  { value: "construction", label: "Planned Construction",    icon: "🏗️" },
+  { value: "procession", label: "Procession / Rally", icon: "🚶" },
+  { value: "rare_event", label: "VIP Movement / Protest", icon: "⚠️" },
+  { value: "construction", label: "Planned Construction", icon: "🏗️" },
 ];
 
 const SEVERITY_CONFIG = {
-  CRITICAL: { color: "text-red-400",    bg: "bg-red-950 border-red-700",    label: "CRITICAL — Immediate pre-deployment required" },
-  HIGH:     { color: "text-orange-400", bg: "bg-orange-950 border-orange-700", label: "HIGH — Deploy officers 30 min before event" },
-  MEDIUM:   { color: "text-yellow-400", bg: "bg-yellow-950 border-yellow-700", label: "MEDIUM — Standard pre-positioning" },
-  LOW:      { color: "text-green-400",  bg: "bg-green-950 border-green-700",  label: "LOW — Monitor only" },
+  CRITICAL: { color: "text-red-400", bg: "bg-red-950 border-red-700", label: "CRITICAL — Immediate pre-deployment required" },
+  HIGH: { color: "text-orange-400", bg: "bg-orange-950 border-orange-700", label: "HIGH — Deploy officers 30 min before event" },
+  MEDIUM: { color: "text-yellow-400", bg: "bg-yellow-950 border-yellow-700", label: "MEDIUM — Standard pre-positioning" },
+  LOW: { color: "text-green-400", bg: "bg-green-950 border-green-700", label: "LOW — Monitor only" },
 };
 
 function StatBox({ icon, value, label, sub }) {
@@ -37,30 +37,30 @@ function StatBox({ icon, value, label, sub }) {
 }
 
 export default function EventPlanner({ apiBase = API }) {
-  const [corridors,  setCorridors]  = useState([]);
-  const [zones,      setZones]      = useState([]);
-  const [junctions,  setJunctions]  = useState([]);
-  const [loading,    setLoading]    = useState(false);
-  const [advisory,   setAdvisory]   = useState(null);
-  const [error,      setError]      = useState(null);
+  const [corridors, setCorridors] = useState([]);
+  const [zones, setZones] = useState([]);
+  const [junctions, setJunctions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [advisory, setAdvisory] = useState(null);
+  const [error, setError] = useState(null);
 
   // Form state
   const [form, setForm] = useState({
-    event_type_cause:     "public_event",
-    event_date:           "",
-    event_hour:           18,
-    expected_attendance:  "2000_5000",
-    corridor:             "Non-corridor",
-    zone:                 "Unknown",
-    junction:             "Unknown",
+    event_type_cause: "public_event",
+    event_date: "",
+    event_hour: 18,
+    expected_attendance: "2000_5000",
+    corridor: "Non-corridor",
+    zone: "Unknown",
+    junction: "Unknown",
     requires_road_closure: false,
   });
 
   // Load dropdowns once
   useEffect(() => {
-    axios.get(`${apiBase}/corridors`).then(r => setCorridors(r.data.corridors)).catch(() => {});
-    axios.get(`${apiBase}/zones`).then(r => setZones(r.data.zones)).catch(() => {});
-    axios.get(`${apiBase}/junctions`).then(r => setJunctions(r.data.junctions)).catch(() => {});
+    axios.get(`${apiBase}/corridors`).then(r => setCorridors(r.data.corridors)).catch(() => { });
+    axios.get(`${apiBase}/zones`).then(r => setZones(r.data.zones)).catch(() => { });
+    axios.get(`${apiBase}/junctions`).then(r => setJunctions(r.data.junctions)).catch(() => { });
   }, [apiBase]);
 
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }));
@@ -78,17 +78,17 @@ export default function EventPlanner({ apiBase = API }) {
     }
 
     const payload = {
-      event_cause:            form.event_type_cause,
-      event_type:             "planned",
-      hour:                   Number(form.event_hour),
-      month:                  month,
-      corridor:               form.corridor,
-      zone:                   form.zone,
-      junction:               form.junction,
-      requires_road_closure:  form.requires_road_closure,
-      expected_attendance:    form.expected_attendance,
-      latitude:               12.97,
-      longitude:              77.59,
+      event_cause: form.event_type_cause,
+      event_type: "planned",
+      hour: Number(form.event_hour),
+      month: month,
+      corridor: form.corridor,
+      zone: form.zone,
+      junction: form.junction,
+      requires_road_closure: form.requires_road_closure,
+      expected_attendance: form.expected_attendance,
+      latitude: 12.97,
+      longitude: 77.59,
     };
 
     try {
@@ -102,13 +102,13 @@ export default function EventPlanner({ apiBase = API }) {
   };
 
   const selectedAttendance = ATTENDANCE_OPTIONS.find(o => o.value === form.expected_attendance);
-  const selectedEventType  = EVENT_TYPES.find(e => e.value === form.event_type_cause);
+  const selectedEventType = EVENT_TYPES.find(e => e.value === form.event_type_cause);
 
   // Pre-deployment timing recommendation
   const preDeployMins = advisory
     ? advisory.severity === "CRITICAL" ? 60
-    : advisory.severity === "HIGH"     ? 45
-    : advisory.severity === "MEDIUM"   ? 30 : 15
+      : advisory.severity === "HIGH" ? 45
+        : advisory.severity === "MEDIUM" ? 30 : 15
     : null;
 
   const sevCfg = advisory ? SEVERITY_CONFIG[advisory.severity] : null;
@@ -141,11 +141,10 @@ export default function EventPlanner({ apiBase = API }) {
                 <button
                   key={et.value}
                   onClick={() => set("event_type_cause", et.value)}
-                  className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border text-sm transition-all text-left ${
-                    form.event_type_cause === et.value
+                  className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border text-sm transition-all text-left ${form.event_type_cause === et.value
                       ? "border-blue-500 bg-blue-950 text-blue-300"
                       : "border-gray-700 bg-gray-800 text-gray-300 hover:border-gray-600"
-                  }`}
+                    }`}
                 >
                   <span>{et.icon}</span>
                   <span className="text-xs leading-tight">{et.label}</span>
@@ -193,11 +192,10 @@ export default function EventPlanner({ apiBase = API }) {
                 <button
                   key={opt.value}
                   onClick={() => set("expected_attendance", opt.value)}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg border text-sm transition-all ${
-                    form.expected_attendance === opt.value
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg border text-sm transition-all ${form.expected_attendance === opt.value
                       ? "border-blue-500 bg-blue-950 text-blue-300"
                       : "border-gray-700 bg-gray-800 text-gray-300 hover:border-gray-600"
-                  }`}
+                    }`}
                 >
                   <span>{opt.icon} {opt.label}</span>
                   <span className="text-xs text-gray-500">{opt.officers_hint}</span>
@@ -245,13 +243,13 @@ export default function EventPlanner({ apiBase = API }) {
             </div>
             <button
               onClick={() => set("requires_road_closure", !form.requires_road_closure)}
-              className={`relative w-11 h-6 rounded-full transition-colors ${
-                form.requires_road_closure ? "bg-blue-600" : "bg-gray-600"
-              }`}
+              className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors ${form.requires_road_closure ? "bg-blue-600" : "bg-gray-600"
+                }`}
             >
-              <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
-                form.requires_road_closure ? "translate-x-5" : "translate-x-0.5"
-              }`} />
+              <span
+                className={`inline-block h-5 w-5 transform rounded-full bg-white transition ${form.requires_road_closure ? "translate-x-6" : "translate-x-1"
+                  }`}
+              />
             </button>
           </div>
 
@@ -334,7 +332,7 @@ export default function EventPlanner({ apiBase = API }) {
 
               {/* Resource numbers */}
               <div className="grid grid-cols-3 gap-3">
-                <StatBox icon="👮" value={advisory.officers_needed}   label="Officers" sub="Pre-position" />
+                <StatBox icon="👮" value={advisory.officers_needed} label="Officers" sub="Pre-position" />
                 <StatBox icon="🚧" value={advisory.barricades_needed} label="Barricades" sub="Required" />
                 <StatBox icon="🔀" value={advisory.diversion_needed ? "YES" : "NO"} label="Diversion" sub="Activate?" />
               </div>
@@ -343,9 +341,9 @@ export default function EventPlanner({ apiBase = API }) {
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 space-y-3">
                 <p className="text-white font-semibold text-sm">Forecasted Risk Levels</p>
                 {[
-                  { label: "Congestion Risk",         value: advisory.congestion_risk,          max: 100, color: "#f97316" },
-                  { label: "Road Closure Probability",value: advisory.road_closure_probability,  max: 100, color: "#ef4444" },
-                  { label: "Prediction Confidence",   value: advisory.priority_confidence,       max: 100, color: "#3b82f6" },
+                  { label: "Congestion Risk", value: advisory.congestion_risk, max: 100, color: "#f97316" },
+                  { label: "Road Closure Probability", value: advisory.road_closure_probability, max: 100, color: "#ef4444" },
+                  { label: "Prediction Confidence", value: advisory.priority_confidence, max: 100, color: "#3b82f6" },
                 ].map(r => (
                   <div key={r.label}>
                     <div className="flex justify-between text-xs mb-1">
