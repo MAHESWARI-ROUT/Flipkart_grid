@@ -15,3 +15,5 @@ dist/
 build/
 
 *.log
+.env
+.env.local
