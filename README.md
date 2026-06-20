@@ -1,6 +1,6 @@
 # PULSE — Predictive Urban Live Situation Engine
 
-> **Flipkart Grid 2025 · Event-Driven Congestion (Planned & Unplanned)**
+> **Flipkart Gridlock Hackathon 2.0 2026 · Event-Driven Congestion (Planned & Unplanned)**
 >
 > An AI-powered traffic intelligence platform for Bengaluru that predicts incident impact,
 > recommends officer and barricade deployment, and generates smart diversion plans —
@@ -329,4 +329,4 @@ The formula is intentionally transparent — any operator can audit it without M
 ---
 
 *PULSE — Built for Bengaluru. Built for real.*
-*Flipkart Grid 2025 | Event-Driven Congestion Track*
+*Flipkart Gridlock Hackathon 2.0 2026 | Event-Driven Congestion Track*
