@@ -92,9 +92,7 @@ df['cause_group'] = (
 print("Feature engineering done")
 print(df[['hour','day_of_week','is_peak_hour','duration_mins','is_major_corridor']].describe())
 
-# IMPACT SCORE (0–100) 
-# Derived formula from domain logic + data analysis.
-# Judges can see this is explainable, not a black box.
+
 
 cause_severity = {
     'debris':          10,
@@ -643,8 +641,8 @@ print("Fold Scores:", cv_scores)
 print("Mean Accuracy:", cv_scores.mean())
 print("Std:", cv_scores.std())
 
-# ── 6. RESOURCE RECOMMENDATION ENGINE ────────────────────────────────────────
-# Rule-based + ML hybrid — explainable for judges
+# RESOURCE RECOMMENDATION ENGINE 
+
 
 RESOURCE_TABLE = {
     # cause: (officers, barricades, diversion_needed)
@@ -828,10 +826,7 @@ def predict_incident(
     np.mean(list(corridor_freq_map.values()))
 )
 
-    """hotspot_density = (
-    0.7 * corridor_freq
-    + 0.3 * junction_freq
-)"""
+   
     nearest_cluster = get_nearest_cluster(
     latitude,
     longitude

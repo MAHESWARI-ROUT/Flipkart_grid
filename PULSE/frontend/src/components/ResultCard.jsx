@@ -25,9 +25,9 @@ const ScoreRing = ({ value, color }) => {
   )
 }
 
-// ✅ NEW: Hotspot feature bar component
+// Hotspot feature bar component
 const FeatureBar = ({ label, value, color, tooltip }) => {
-  // Normalize to 0–100 for display (values are raw frequencies/densities)
+  // Normalize to 0–100 for display 
   const MAX_DISPLAY = 100
   const displayPct = Math.min((value / MAX_DISPLAY) * 100, 100)
   const intensity = value > 50 ? 'High' : value > 20 ? 'Medium' : 'Low'
@@ -72,7 +72,7 @@ const confidenceLabel =
       ? '🟡 Medium Confidence'
       : '🔴 Low Confidence'
 
-  // ✅ Spatial features from backend
+  // Spatial features from backend
   const jf = result.junction_freq ?? null
   const cf = result.corridor_freq ?? null
   const hd = result.hotspot_density ?? null
@@ -162,7 +162,7 @@ const confidenceLabel =
   </p>
 </div>
 
-      {/* ── ✅ NEW: Spatial Intelligence / Hotspot Explanation ── */}
+      {/* ── Spatial Intelligence / Hotspot Explanation ── */}
       {hasFeatures && (
         <div className="bg-black bg-opacity-25 rounded-lg p-4 space-y-3 border border-gray-700">
           <div className="flex items-center justify-between mb-1">

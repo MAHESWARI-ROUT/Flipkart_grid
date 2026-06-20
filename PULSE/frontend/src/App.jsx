@@ -107,7 +107,7 @@ export default function App() {
           </div>
         )}
 
-        {/* Event Planner tab — NEW */}
+        {/* Event Planner tab */}
         {tab === 'planner' && <EventPlanner apiBase={API} />}
 
         {/* Hotspot Map tab */}

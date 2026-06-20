@@ -40,23 +40,12 @@ def _get_nearest_cluster(lat: float, lon: float) -> int:
     return best
 
 
-# PROVISIONAL PRIORITY FLAG — mirrors the training-time `priority` column.
-# NOTE: in the source ASTraM data, `priority == 'High'` agrees with
-# `is_major_corridor` 99.8% of the time (verified against the raw CSV) —
-# in this dataset, priority is effectively a corridor-routing tag rather
-# than a severity judgment. We use is_major directly as the faithful proxy
-# rather than inventing a separate cause/closure-based rule that the data
-# doesn't actually support.
+
 def _is_high_priority(is_major: int) -> bool:
     return bool(is_major)
 
 
-# IMPACT SCORE — domain-expert formula (same 5 terms as training:
-# cause_severity*5 + road_closure*20 + priority_high*15 + is_major*10 + is_peak*5)
-# NOTE: because priority_high ≈ is_major in this dataset, major-corridor
-# status is effectively weighted 25 points total (15+10), not 10. This is
-# a property of the source data's `priority` column, not double-counting
-# introduced here — flagging it explicitly for explainability.
+
 def _impact_score(cause_severity: int, road_closure: bool,
                   is_major: int, is_peak: int, is_high_priority: bool) -> float:
     score = (
@@ -69,7 +58,7 @@ def _impact_score(cause_severity: int, road_closure: bool,
     return float(min(max(score, 0), 100))
 
 
-# PRIORITY — rule-based (explainable, no leaking model)
+# PRIORITY — rule-based
 def _priority_rule(impact: float, cause: str,
                    is_major: int, road_closure: bool) -> tuple:
     HIGH_CAUSES = {"accident", "rare_event", "public_event", "procession"}
@@ -100,7 +89,7 @@ RESOURCE_TABLE_DEFAULT = {
     "others":            (2, 1, False),
 }
 
-# NEW: Attendance buckets → (impact_points, resource_multiplier, label)
+# Attendance buckets → (impact_points, resource_multiplier, label)
 ATTENDANCE_TABLE = {
     "lt_500":     {"points": 0,  "mult": 1.0,  "label": "Less than 500"},
     "500_2000":   {"points": 8,  "mult": 1.15, "label": "500 - 2,000"},
@@ -226,7 +215,7 @@ def predict(data: dict) -> dict:
 )
     is_wknd = int(dow >= 5)
 
-    # NEW: Expected attendance bucket (crowd-size signal)
+    # Expected attendance  (crowd-size signal)
     attendance_key   = str(data.get("expected_attendance", "lt_500"))
     attendance_info  = _attendance_info(attendance_key)
     attendance_points = attendance_info["points"]
@@ -324,7 +313,7 @@ def predict(data: dict) -> dict:
         drivers.append({"name": "Expected Attendance",   "score": attendance_points})
     drivers = sorted(drivers, key=lambda x: x["score"], reverse=True)
 
-    # Impact contributors breakdown (for explainability panel)
+    # Impact contributors breakdown 
     impact_contributors = [
         {"label": "Cause Severity", "points": round(sev * 5, 1)},
         {"label": "Road Closure",   "points": 20 if (closure_pred or rc) else 0},
