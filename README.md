@@ -20,7 +20,7 @@
 
 ## Live Dashboard
 
-![PULSE Dashboard — Incident Impact Predictor](DASHBOARD.png)
+![PULSE Dashboard — Incident Impact Predictor] (DASHBOARD.png)
 *PULSE live dashboard showing the Incident Impact Predictor: a Vehicle Breakdown on Airport New South Road at peak hour (18:00) returns HIGH severity, impact score 68, congestion risk 64.6/100, 77% prediction confidence, Smart Diversion recommendations, and a Resource & Action Plan of 5 officers + 3 barricades.*
 
 ---
