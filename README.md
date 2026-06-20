@@ -165,7 +165,7 @@ Open the frontend link and everything works out of the box — no installation r
 ### Option B — Run Locally
 
 #### Prerequisites
-- Python 3.10+
+- Python 3.10+ (3.11 recommended)
 - Node.js 18+
 - The ASTRAM dataset CSV in the project root
 
