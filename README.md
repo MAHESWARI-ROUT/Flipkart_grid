@@ -319,7 +319,7 @@ The formula is intentionally transparent — any operator can audit it without M
 
 | Problem | Fix |
 |---|---|
-| API Offline badge showing | Backend not running — check Step 2, ensure port 8000 is free |
+| API Offline badge showing | Backend not running — Backend is already live — visit https://flipkart-grid-30ud.onrender.com |
 | `ModuleNotFoundError` on startup | `pip install -r requirements.txt` inside the backend folder |
 | Model files missing error | Run `python final_training_model.py` first (Step 1) |
 | CORS error in browser console | Ensure backend is on port 8000 exactly |
