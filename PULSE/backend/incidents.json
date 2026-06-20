@@ -1,1 +1,110 @@
-[]
+[
+  {
+    "incident_type": "pot_holes",
+    "corridor": "Old Madras Road",
+    "zone": "Unknown",
+    "junction": "Unknown",
+    "severity": "MEDIUM",
+    "impact_score": 40.0,
+    "officers_needed": 2,
+    "barricades_needed": 2,
+    "id": "159c48af-e7cf-48d8-a266-fd3fd9e4a01c",
+    "timestamp": "20-Jun-2026 16:43"
+  },
+  {
+    "incident_type": "public_event",
+    "corridor": "Tumkur Road",
+    "zone": "Central Zone 1",
+    "junction": "17th Mn 1st Crs Aishwarya Stores Jn",
+    "severity": "CRITICAL",
+    "impact_score": 93.0,
+    "officers_needed": 16,
+    "barricades_needed": 10,
+    "id": "b12bda49-caf1-47ab-9c42-a003a966e55f",
+    "timestamp": "20-Jun-2026 16:44"
+  },
+  {
+    "incident_type": "pot_holes",
+    "corridor": "IRR(Thanisandra road)",
+    "zone": "Unknown",
+    "junction": "Unknown",
+    "severity": "MEDIUM",
+    "impact_score": 40.0,
+    "officers_needed": 2,
+    "barricades_needed": 2,
+    "id": "df1c5d68-9354-4820-9421-2d622659f9af",
+    "timestamp": "20-Jun-2026 16:45"
+  },
+  {
+    "incident_type": "construction",
+    "corridor": "Airport New South Road",
+    "zone": "Central Zone 1",
+    "junction": "17th Mn 1st Crs Aishwarya Stores Jn",
+    "severity": "CRITICAL",
+    "impact_score": 80.0,
+    "officers_needed": 9,
+    "barricades_needed": 6,
+    "id": "fbb54356-5b4c-4fd4-9946-309c8c9f47ca",
+    "timestamp": "20-Jun-2026 16:46"
+  },
+  {
+    "incident_type": "public_event",
+    "corridor": "ORR East 2",
+    "zone": "Unknown",
+    "junction": "SatteliteBusStandJunc",
+    "severity": "CRITICAL",
+    "impact_score": 100.0,
+    "officers_needed": 25,
+    "barricades_needed": 15,
+    "id": "7dd38547-df19-46f6-9913-7275d2219d2c",
+    "timestamp": "20-Jun-2026 16:46"
+  },
+  {
+    "incident_type": "water_logging",
+    "corridor": "Unknown",
+    "zone": "Unknown",
+    "junction": "Unknown",
+    "severity": "MEDIUM",
+    "impact_score": 25.0,
+    "officers_needed": 3,
+    "barricades_needed": 3,
+    "id": "08999361-0b3a-4f70-8c70-97b358613001",
+    "timestamp": "20-Jun-2026 16:47"
+  },
+  {
+    "incident_type": "congestion",
+    "corridor": "Airport New South Road",
+    "zone": "Central Zone 1",
+    "junction": "17th Mn 1st Crs Aishwarya Stores Jn",
+    "severity": "HIGH",
+    "impact_score": 50.0,
+    "officers_needed": 6,
+    "barricades_needed": 2,
+    "id": "39514161-c20e-4c74-bdfd-083bcc5a4549",
+    "timestamp": "20-Jun-2026 16:49"
+  },
+  {
+    "incident_type": "accident",
+    "corridor": "Airport New South Road",
+    "zone": "Central Zone 1",
+    "junction": "17th Mn 1st Crs Aishwarya Stores Jn",
+    "severity": "CRITICAL",
+    "impact_score": 75.0,
+    "officers_needed": 10,
+    "barricades_needed": 5,
+    "id": "9c8b9699-8d70-46b4-82fe-3a955d911a8f",
+    "timestamp": "20-Jun-2026 17:00"
+  },
+  {
+    "incident_type": "accident",
+    "corridor": "Airport New South Road",
+    "zone": "Central Zone 1",
+    "junction": "17th Mn 1st Crs Aishwarya Stores Jn",
+    "severity": "CRITICAL",
+    "impact_score": 75.0,
+    "officers_needed": 10,
+    "barricades_needed": 5,
+    "id": "14015ec6-1744-47ff-af62-99033a4cf7e8",
+    "timestamp": "20-Jun-2026 17:06"
+  }
+]

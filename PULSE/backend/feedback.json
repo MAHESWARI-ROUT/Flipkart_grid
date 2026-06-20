@@ -1,1 +1,65 @@
-[]
+[
+  {
+    "predicted_severity": "MEDIUM",
+    "actual_severity": "LOW",
+    "officers_recommended": 3,
+    "officers_deployed": 2,
+    "barricades_used": 2,
+    "diversion_effective": false,
+    "comments": ""
+  },
+  {
+    "predicted_severity": "CRITICAL",
+    "actual_severity": "CRITICAL",
+    "officers_recommended": 25,
+    "officers_deployed": 25,
+    "barricades_used": 15,
+    "diversion_effective": true,
+    "comments": ""
+  },
+  {
+    "predicted_severity": "CRITICAL",
+    "actual_severity": "CRITICAL",
+    "officers_recommended": 9,
+    "officers_deployed": 9,
+    "barricades_used": 6,
+    "diversion_effective": true,
+    "comments": ""
+  },
+  {
+    "predicted_severity": "MEDIUM",
+    "actual_severity": "MEDIUM",
+    "officers_recommended": 2,
+    "officers_deployed": 2,
+    "barricades_used": 2,
+    "diversion_effective": true,
+    "comments": ""
+  },
+  {
+    "predicted_severity": "CRITICAL",
+    "actual_severity": "CRITICAL",
+    "officers_recommended": 16,
+    "officers_deployed": 16,
+    "barricades_used": 10,
+    "diversion_effective": true,
+    "comments": ""
+  },
+  {
+    "predicted_severity": "MEDIUM",
+    "actual_severity": "MEDIUM",
+    "officers_recommended": 2,
+    "officers_deployed": 2,
+    "barricades_used": 2,
+    "diversion_effective": true,
+    "comments": ""
+  },
+  {
+    "predicted_severity": "HIGH",
+    "actual_severity": "HIGH",
+    "officers_recommended": 6,
+    "officers_deployed": 4,
+    "barricades_used": 2,
+    "diversion_effective": true,
+    "comments": ""
+  }
+]
